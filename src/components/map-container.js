@@ -473,6 +473,7 @@ export default function MapContainerFactory(MapPopover, MapControl) {
                 onSelect={uiStateActions.setSelectedFeature}
                 onUpdate={visStateActions.setFeatures}
                 style={{zIndex: isEdit ? 0 : -1}}
+                onToggleFeatureLayer={visStateActions.toggleFeatureLayer}
               />
             </MapComponent>
           </div>
