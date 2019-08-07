@@ -23,7 +23,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {Tooltip} from 'components/common/styled-components';
 import KeplerGlLogo from 'components/common/logo';
-import {Save, Files, Share, Picture, Map} from 'components/common/icons';
+import {Save, Files, Share, Picture, Map, Carto} from 'components/common/icons';
 import ClickOutsideCloseDropdown from 'components/side-panel/panel-dropdown';
 
 const StyledPanelHeader = styled.div.attrs({
@@ -187,6 +187,19 @@ export const ExportMapFactory = () => {
   return ExportMap;
 };
 
+const ExportCartoFactory = () => {
+  const ExportCarto = (props) => (
+    <PanelItem {...props} />
+  );
+
+  ExportCarto.defaultProps = {
+    label: 'Export to CARTO',
+    icon: <Carto />
+  }
+
+  return ExportCarto;
+};
+
 export const SaveMapFactory = () => {
   const SaveMap = (props) => (
     <PanelItem {...props}/>
@@ -203,16 +216,19 @@ export const SaveExportDropdownFactory = (
   ExportImage,
   ExportData,
   ExportMap,
+  ExportCarto,
   SaveMap) => {
   const SaveExportDropdown = ({
     onExportImage,
     onExportData,
     onExportConfig,
     onExportMap,
+    onExportCarto,
     onSaveMap,
     show,
     onClose
   }) => {
+
     return (
       <StyledPanelDropdown show={show} className="save-export-dropdown">
         <ClickOutsideCloseDropdown className="save-export-dropdown__inner"
@@ -228,6 +244,10 @@ export const SaveExportDropdownFactory = (
           />
           <ExportMap
             onClickHandler={onExportMap}
+            onClose={onClose}
+          />
+          <ExportCarto
+            onClickHandler={onExportCarto}
             onClose={onClose}
           />
           {onSaveMap ? (
@@ -248,6 +268,7 @@ SaveExportDropdownFactory.deps = [
   ExportImageFactory,
   ExportDataFactory,
   ExportMapFactory,
+  ExportCartoFactory,
   SaveMapFactory
 ];
 
@@ -289,6 +310,7 @@ function PanelHeaderFactory(
         onExportData,
         onExportConfig,
         onExportMap,
+        onExportCarto,
         visibleDropdown,
         showExportDropdown,
         hideExportDropdown
@@ -320,6 +342,7 @@ function PanelHeaderFactory(
                       onExportImage={onExportImage}
                       onExportConfig={onExportConfig}
                       onExportMap={onExportMap}
+                      onExportCarto={onExportCarto}
                     />
                   ) : null}
                 </div>

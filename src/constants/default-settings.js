@@ -55,6 +55,7 @@ export const ADD_DATA_ID = 'addData';
  * @public
  */
 export const EXPORT_IMAGE_ID = 'exportImage';
+export const EXPORT_CARTO_ID = 'exportCarto';
 /**
  * Modal id: export data modal
  * @constant

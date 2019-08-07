@@ -36,6 +36,7 @@ import ExportImageModalFactory from './modals/export-image-modal';
 import ExportDataModalFactory from './modals/export-data-modal';
 import ExportMapModalFactory from './modals/export-map-modal';
 import AddMapStyleModalFactory from './modals/add-map-style-modal';
+import ExportCartoModal from './modals/export-carto-modal';
 
 // Breakpoints
 import {media} from 'styles/media-breakpoints';
@@ -51,7 +52,8 @@ import {
   EXPORT_DATA_TYPE,
   EXPORT_IMAGE_ID,
   EXPORT_MAP_ID,
-  ADD_MAP_STYLE_ID
+  ADD_MAP_STYLE_ID,
+  EXPORT_CARTO_ID
 } from 'constants/default-settings';
 import {EXPORT_MAP_FORMAT} from '../constants/default-settings';
 
@@ -396,7 +398,11 @@ export default function ModalContainerFactory(
               }
             };
             break;
-
+          case EXPORT_CARTO_ID:
+            template = (
+              <ExportCartoModal />
+            );
+            break;
           default:
             break;
         }

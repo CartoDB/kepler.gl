@@ -38,7 +38,8 @@ import {
   EXPORT_IMAGE_ID,
   EXPORT_DATA_ID,
   EXPORT_MAP_ID,
-  PANELS
+  PANELS,
+  EXPORT_CARTO_ID
 } from 'constants/default-settings';
 
 const SidePanelContent = styled.div`
@@ -128,6 +129,8 @@ export default function SidePanelFactory(
 
     _onExportMap = () => this.props.uiStateActions.toggleModal(EXPORT_MAP_ID);
 
+    _onExportCarto = () => this.props.uiStateActions.toggleModal(EXPORT_CARTO_ID);
+
     render() {
       const {
         appName,
@@ -204,6 +207,7 @@ export default function SidePanelFactory(
               version={version}
               onExportImage={this._onExportImage}
               onExportData={this._onExportData}
+              onExportCarto={this._onExportCarto}
               visibleDropdown={uiState.visibleDropdown}
               showExportDropdown={uiStateActions.showExportDropdown}
               hideExportDropdown={uiStateActions.hideExportDropdown}
