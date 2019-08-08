@@ -1,3 +1,23 @@
+// Copyright (c) 2019 Uber Technologies, Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 const name = 'carto';
 import DropboxIcon from '../../components/icons/dropbox-icon';
 
@@ -11,8 +31,8 @@ const carto = {};
  * - Close the opened tab
  */
 function handleLogin(onCloudLoginSuccess) {
-  const scopes = ['user:profile', 'datasets', 'wadus'];
-  const link = `https://carto.com/oauth2/authorize?client_id=${carto.client_id}&response_type=token&state=0&scopes=${scopes.join(' ')}&redirect_uri=https://localhost:8080/auth`;
+  const scopes = ['user:profile', 'datasets:rw:carto_kepler_gl_maps'];
+  const link = `https://carto.com/oauth2/authorize?client_id=${carto.client_id}&response_type=token&state=0&scope=${scopes.join(' ')}&redirect_uri=https://localhost:8080/auth`;
   const authWindow = window.open(link, '_blank', 'width=1024,height=716');
   const handleToken = e => {
     // TODO: add security step to validate which domain the message is coming from

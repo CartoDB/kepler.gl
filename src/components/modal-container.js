@@ -400,7 +400,9 @@ export default function ModalContainerFactory(
             break;
           case EXPORT_CARTO_ID:
             template = (
-              <ExportCartoModal />
+              <ExportCartoModal
+                visState={visState}
+              />
             );
             break;
           default:
