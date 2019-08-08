@@ -402,6 +402,8 @@ export default function ModalContainerFactory(
             template = (
               <ExportCartoModal
                 visState={visState}
+                mapState={mapState}
+                mapStyle={mapStyle}
               />
             );
             break;

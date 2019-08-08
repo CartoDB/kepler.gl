@@ -21,7 +21,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Button, Input } from '../../../dist/components/common/styled-components';
-// import KeplerGLSchemaManager from 'schemas/schema-manager';
+import KeplerGlSchema from 'schemas';
 import {formatCsv} from 'processors/data-processor';
 import Wkt from 'wicket';
 
@@ -118,7 +118,47 @@ export default class ExportCartoModal extends Component {
     });
   }
 
+  _saveMap = () => {
+    // It's not this props, it's { visState, mapState, mapStyle }
+    const config = KeplerGlSchema.getConfigToSave(this.props);
+
+    const transactionQuery = `
+      BEGIN;
+        CREATE TABLE IF NOT EXISTS kepler_gl_maps (
+          name varchar PRIMARY KEY,
+          config json
+        );
+
+        INSERT INTO kepler_gl_maps (name, config)
+        VALUES ('${this.state.mapName}', '${JSON.stringify(config)}');
+      COMMIT;
+    `;
+
+    const formData = new FormData();
+    formData.append('q', transactionQuery);
+
+    // TODO: show state in UI
+    fetch(`https://roman-carto.carto.com/api/v2/sql?api_key=${this.state.apiKey}`, {
+      method: 'POST',
+      body: formData
+    })
+      .then(response => response.json())
+      .then(response => {
+        if (response.error) {
+          console.error(response.error);
+          return;
+        }
+      });
+  }
+
   _onSave = (e) => {
+    if (!this.state.mapName) {
+      return;
+    }
+
+    this._saveMap();
+
+    // TODO: Move this into _saveDatasets
     const {visState} = this.props;
     const {datasets} = visState;
     const selectedDatasets = Object.values(datasets);
@@ -153,7 +193,7 @@ export default class ExportCartoModal extends Component {
       const columns = fieldsWithoutGeojson
         .map(field => {
           if (TYPE_MAP[field.type] === undefined) {
-            console.log(field.type);
+            console.error('Unknown field type:', field.type);
           }
 
           return `${field.name} ${TYPE_MAP[field.type]}`;
