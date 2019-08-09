@@ -215,6 +215,12 @@ export function loadSample(options, pushRoute = true) {
   };
 }
 
+/* 
+  Create our own loadSample, takes a list of dataset ids as arguments (config.visstate.layers.map(l => l.config.dataId)).
+
+  Try to follow similar code path, but they do not support loading multiple layers on LOAD_REMOTE_RESOURCE_SUCCESS
+*/
+
 /**
  * Load remote map with config and data
  * @param options {configUrl, dataUrl}
