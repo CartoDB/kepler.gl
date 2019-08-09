@@ -98,6 +98,8 @@ export default class ExportCartoModal extends Component {
     this.setState({
       apiKey
     });
+
+    this._triggerSearch(this.state.mapName);
   }
 
   _onChangeUserName = (e) => {
@@ -108,6 +110,8 @@ export default class ExportCartoModal extends Component {
     this.setState({
       userName
     });
+
+    this._triggerSearch(this.state.mapName);
   }
 
   _onChangeMapName = (e) => {
@@ -115,6 +119,10 @@ export default class ExportCartoModal extends Component {
       mapName: e.target.value
     });
 
+    this._triggerSearch(e.target.value);
+  }
+
+  _triggerSearch = (mapName) => {
     this.setState({
       status: 'fetching',
       error: null
@@ -122,15 +130,13 @@ export default class ExportCartoModal extends Component {
 
     clearTimeout(this._timeoutId);
 
-    const mapName = e.target.value;
-
     this._timeoutId = setTimeout(() => {
       this._checkMapExists(mapName);
     }, 500)
   }
 
   _checkMapExists = (mapName) => {
-    if (!this.state.userName || !this.state.apiKey) {
+    if (!this.state.userName || !this.state.apiKey || mapName.length === 0) {
       return;
     }
 
@@ -143,12 +149,21 @@ export default class ExportCartoModal extends Component {
           status: 'idle'
         };
 
-        if (response.rows.length > 0) {
+        if (response.rows && response.rows.length > 0) {
           this.setState({
             ...status,
             error: 'Map already exists'
           });
 
+          return;
+        }
+
+        if (response.error) {
+          this.setState({
+            ...status,
+            error: response.error[0]
+          });
+          
           return;
         }
 
@@ -281,6 +296,7 @@ export default class ExportCartoModal extends Component {
       const columns = fieldsWithoutGeojson
         .map(field => {
           if (TYPE_MAP[field.type] === undefined) {
+            // eslint-disable-next-line no-console
             console.error('Unknown field type:', field.type);
           }
 
@@ -391,8 +407,6 @@ export default class ExportCartoModal extends Component {
       this.state.error !== null ||
       this.state.userName.length === 0 ||
       this.state.apiKey.length === 0;
-
-    console.log(this.state.status);
 
     return (
       <div>
