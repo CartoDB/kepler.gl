@@ -136,7 +136,7 @@ order: desc(width())
     viz: `@income: globalStandardDev($median_income,5)
 @color: geyser
 
-color: opacity(ramp(@income,@color),0.9)
+color: opacity(ramp(@income,@color),0.95)
 strokeColor: ramp(@income,@color)
 strokeWidth: 1
 `,
@@ -154,7 +154,7 @@ strokeWidth: 1
     viz: `@edu: globalQuantiles($higher_ed,7)
 @color: reverse(purpor)
     
-color: opacity(ramp(@edu,@color),0.9)
+color: opacity(ramp(@edu,@color),0.95)
 strokeColor: ramp(@edu,@color)
 strokeWidth: 1
 `,
@@ -172,7 +172,7 @@ strokeWidth: 1
     viz: `@edu: buckets($higher_ed,[30,50,70])
 @color: reverse(purpor)
     
-color: opacity(ramp(@edu,@color),0.9)
+color: opacity(ramp(@edu,@color),0.95)
 strokeColor: ramp(@edu,@color)
 strokeWidth: 1
 `,
