@@ -39,8 +39,6 @@ export default class CartoDatasets extends Component {
         name: 'ne_10m_airports'
       },{
         name: 'cool_places'
-      },{
-        name: 'cool_rivers'
       }]
     };
   }
