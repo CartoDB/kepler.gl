@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>kepler.gl demo</title>
+    <link rel="stylesheet" href="//d1a3f4spazzrp4.cloudfront.net/kepler.gl/uber-fonts/4.0.0/superfine.css">
+    <link href="//api.tiles.mapbox.com/mapbox-gl-js/v0.42.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://libs.cartocdn.com/carto-vl/v1.4/carto-vl.min.js"></script>
+    <style type="text/css">
+       body {margin: 0; padding: 0; overflow: hidden;}
+    </style>
+  </head>
+  <body>
+    <script src="/bundle.js"></script>
+    <script>
+      let layer;
+
+      
+      window.loadCartoVLMap = function (config) {
+        carto.setDefaultAuth({
+          username: config.username,
+          apiKey: config.apiKey || 'default_public'
+        });
+
+        const source = new carto.source.SQL(
+          config.sql ? config.sql : `select * from ${config.dataset}`
+        );
+        const viz = new carto.Viz(config.viz);
+
+        if (!layer) {
+          layer = new carto.Layer('vl_layer', source, viz);
+          return layer.addTo(_map);
+        } else {
+          layer.hide();
+          return layer.update(source, viz)
+            .then(() => {
+              layer.show();
+            })
+        }
+      }
+
+      let blendTimeoutId;
+      window.blendNewViz = function (newViz) {
+        return new Promise((resolve, reject) => {
+
+          if (layer) {
+            if (blendTimeoutId) {
+              clearTimeout(blendTimeoutId);
+            }
+
+            blendTimeoutId = setTimeout(() => {
+              layer.blendToViz(new carto.Viz(newViz))
+                .then((e) => resolve(e))
+                .catch((e) => reject(e));
+            }, 500);
+          } else {
+            resolve();
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
