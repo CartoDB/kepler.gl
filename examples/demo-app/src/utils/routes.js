@@ -47,6 +47,9 @@ export function buildAppRoutes(Component) {
         <Route path="map" component={Component} />
         <Route path="(:id)" component={Component} />
       </Route>
+    ),
+    (
+      <Route path="kepler.gl"></Route>
     )
   ];
 }
