@@ -200,22 +200,6 @@ strokeWidth: 1
     }
   },
   {
-    id: 'alpha_normalize',
-    name: 'Data Driven Opacity Expression',
-    username: 'cartovl',
-    dataset: 'table_30',
-    viz: `@style: opacity(ramp(linear($sum_qpf,1,120),temps),($e_totpop/$area_sqmi)/300)
-
-color: @style
-strokeColor: @style
-`,
-    mapState: {
-      longitude: -95.944719,    
-      latitude: 30.211882,
-      zoom: 6
-    }
-  },
-  {
     id: 'manual_classification',
     name: 'Manual Classification',
     username: 'cartovl',
@@ -234,14 +218,29 @@ strokeWidth: 1
     }
   },
   {
+    id: 'alpha_normalize',
+    name: 'Data Driven Opacity Expression',
+    username: 'cartovl',
+    dataset: 'table_30',
+    viz: `@style: opacity(ramp(linear($sum_qpf,1,120),temps),($e_totpop/$area_sqmi)/300)
+
+color: @style
+strokeColor: @style
+`,
+    mapState: {
+      longitude: -95.944719,    
+      latitude: 30.211882,
+      zoom: 6
+    }
+  },
+  {
     id: 'animation_cumulative',
     name: 'Cumulative Animation',
     username: 'cartovl',
     dataset: 'cordoba_catastro',
-    sql: 'select * from cordoba_catastro where year > 1900',
     viz: `strokeWidth: 0
 color: ramp($year, ag_sunset)
-filter: animation($year, 20, fade(0.1, hold))
+filter: $year > 1900 and animation($year, 20, fade(0.1, hold))
 `,
     mapState: {
       latitude: 37.87,
@@ -276,7 +275,7 @@ filter: animation(linear($animating_id,-200,1800),5,fade(0.1,0.5))+0.04
     mapState: {
       longitude: 0.9022, 
       latitude: 32.5958,
-      zoom: 2
+      zoom: 1.5
     }
   },
   {
