@@ -151,7 +151,7 @@ export default class ExportCartoModal extends Component {
 
         if (response.rows && response.rows.length > 0) {
           this.setState({
-            ...status,
+            ...newState,
             error: 'Map already exists'
           });
 
@@ -160,7 +160,7 @@ export default class ExportCartoModal extends Component {
 
         if (response.error) {
           this.setState({
-            ...status,
+            ...newState,
             error: response.error[0]
           });
           

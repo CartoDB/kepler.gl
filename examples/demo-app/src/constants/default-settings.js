@@ -79,6 +79,11 @@ export const LOADING_METHODS = [
     ]
   },
   {
+    id: LOADING_METHODS_NAMES.carto,
+    label: 'Load via CARTO',
+    options: []
+  },
+  {
     id: LOADING_METHODS_NAMES.remote,
     label: 'Load Map using URL'
   },
