@@ -169,7 +169,7 @@ strokeWidth: 1
     name: 'Classification - Manual',
     username: 'cartovl',
     dataset: 'county_demog',
-    viz: `@edu: buckets($higher_ed,[30,40,50,60,70])
+    viz: `@edu: buckets($higher_ed,[30,50,70])
 @color: reverse(purpor)
     
 color: opacity(ramp(@edu,@color),0.9)
