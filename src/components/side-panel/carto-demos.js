@@ -151,6 +151,24 @@ strokeWidth: 1
     name: 'Classification - Manual',
     username: 'cartovl',
     dataset: 'county_demog',
+    viz: `@edu: globalQuantiles($higher_ed,7)
+@color: reverse(purpor)
+    
+color: opacity(ramp(@edu,@color),0.9)
+strokeColor: ramp(@edu,@color)
+strokeWidth: 1
+`,
+    mapState: {
+      longitude: -103.456792,   
+      latitude: 38.012550,
+      zoom: 4
+    }
+  },
+  {
+    id: 'manual_classification',
+    name: 'Classification - Manual',
+    username: 'cartovl',
+    dataset: 'county_demog',
     viz: `@edu: buckets($higher_ed,[30,40,50,60,70])
 @color: reverse(purpor)
     
