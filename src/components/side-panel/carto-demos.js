@@ -147,8 +147,8 @@ strokeWidth: 1
     }
   },
   {
-    id: 'manual_classification',
-    name: 'Classification - Manual',
+    id: 'quantiles_classification',
+    name: 'Classification - Quantiles',
     username: 'cartovl',
     dataset: 'county_demog',
     viz: `@edu: globalQuantiles($higher_ed,7)
