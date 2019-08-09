@@ -21,7 +21,7 @@
 const demos = [
   {
     id: 'basic_style_props',
-    name: 'Basic styling properties',
+    name: 'Basic Style Properties',
     username: 'cartovl',
     dataset: 'sf_crime_2019',
     viz: `width: 2.5
@@ -37,7 +37,7 @@ strokeWidth: 0.5
   },
   {
     id: 'ramps_variables_filter',
-    name: 'Ramps, filters and variables',
+    name: 'Ramps, Filters and Variables',
     username: 'cartovl',
     dataset: 'sf_crime_2019',
     viz: `@dist: ramp($police_district,bold)
@@ -56,7 +56,7 @@ $incident_category in ["Larceny Theft","Motor Vehicle Theft"] and $resolution ==
   },
   {
     id: 'color_top_categories',
-    name: 'Color top categories',
+    name: 'Color Top Categories',
     username: 'cartovl',
     dataset: 'sf_crime_2019',
     viz: `@cat: ramp(top($police_district,3),[cyan,deeppink,yellow])
@@ -75,7 +75,7 @@ $incident_category in ["Larceny Theft","Motor Vehicle Theft"] and $resolution ==
   },
   {
     id: 'summarize_cluster_buckets',
-    name: 'Clusters and buckets',
+    name: 'Clusters and Buckets',
     username: 'cartovl',
     dataset: 'sf_crime_2019',
     viz: `@days: ["Friday","Saturday","Sunday"]
@@ -94,7 +94,7 @@ resolution: 32
   },
   {
     id: 'viewport_style',
-    name: 'Viewport based styles',
+    name: 'Viewport Based Styles',
     username: 'cartovl',
     dataset: 'seattle_collisions',
     viz: `@viewport: viewportEqIntervals($personcount,7)
@@ -112,7 +112,7 @@ order: desc(width())
   },
   {
     id: 'interpolation_zoom',
-    name: 'Interpolation and zoom range',
+    name: 'Interpolation and Zoom Range',
     username: 'cartovl',
     dataset: 'seattle_collisions',
     viz: `@count: $personcount
@@ -129,71 +129,20 @@ order: desc(width())
     }
   },
   {
-    id: 'stdev_classification',
-    name: 'Classification - Standard Deviation',
-    username: 'cartovl',
-    dataset: 'county_demog',
-    viz: `@income: globalStandardDev($median_income,5)
-@color: geyser
-
-color: opacity(ramp(@income,@color),0.95)
-strokeColor: ramp(@income,@color)
-strokeWidth: 1
-`,
-    mapState: {
-      longitude: -103.456792,   
-      latitude: 38.012550,
-      zoom: 4
-    }
-  },
-  {
-    id: 'quantiles_classification',
-    name: 'Classification - Quantiles',
-    username: 'cartovl',
-    dataset: 'county_demog',
-    viz: `@edu: globalQuantiles($higher_ed,7)
-@color: reverse(purpor)
-    
-color: opacity(ramp(@edu,@color),0.95)
-strokeColor: ramp(@edu,@color)
-strokeWidth: 1
-`,
-    mapState: {
-      longitude: -103.456792,   
-      latitude: 38.012550,
-      zoom: 4
-    }
-  },
-  {
-    id: 'manual_classification',
-    name: 'Classification - Manual',
-    username: 'cartovl',
-    dataset: 'county_demog',
-    viz: `@edu: buckets($higher_ed,[30,50,70])
-@color: reverse(purpor)
-    
-color: opacity(ramp(@edu,@color),0.95)
-strokeColor: ramp(@edu,@color)
-strokeWidth: 1
-`,
-    mapState: {
-      longitude: -103.456792,   
-      latitude: 38.012550,
-      zoom: 4
-    }
-  },
-  {
     id: 'linear_scale',
     name: 'Linear Scale',
     username: 'cartovl',
-    dataset: 'mnmappluto',
-    viz: `color: ramp(linear($numfloors),ag_grnyl)
-strokeWidth: 0
-filter: between($numfloors, 10, 120)
+    dataset: 'sfcta_congestion_roads',
+    viz: `@palette: [#00BAB9, #DED46C, #C63B66]
+@lines: [1,5]
+    
+color: ramp(linear($auto_speed), @palette)
+width: ramp(linear($auto_speed), @lines)
+filter: $year >= 2017 and $period == 'AM'
 `,
     mapState: {
-      longitude: -73.978442,   
-      latitude: 40.739533,
+      longitude: -122.421131,   
+      latitude: 37.756982,
       zoom: 11.5
     }
   },
@@ -201,20 +150,23 @@ filter: between($numfloors, 10, 120)
     id: 'logarithmic_scale',
     name: 'Logarithmic Scale',
     username: 'cartovl',
-    dataset: 'mnmappluto',
-    viz: `color: ramp(linear(log($numfloors), 2, 4), ag_grnyl)
-strokeWidth: 0
-filter: between($numfloors, 10, 120)
+    dataset: 'sfcta_congestion_roads',
+    viz: `@palette: [#00BAB9, #DED46C, #C63B66]
+@lines: [1,5]
+    
+color: ramp(linear(log($auto_speed),2,4), @palette)
+width: ramp(linear(log($auto_speed),2,4),@lines)
+filter: $year >= 2017 and $period == 'AM'
 `,
     mapState: {
-      longitude: -73.978442,   
-      latitude: 40.739533,
+      longitude: -122.421131,   
+      latitude: 37.756982,
       zoom: 11.5
     }
   },
   {
     id: 'color_normalize',
-    name: 'Data driven color expression',
+    name: 'Data Driven Color Expression',
     username: 'cartovl',
     dataset: 'county_demog',
     viz: `color: 
@@ -232,12 +184,12 @@ strokeWidth: 0.5
   },
   {
     id: 'data_normalize',
-    name: 'Data driven normalization',
+    name: 'Data Driven Normalization',
     username: 'cartovl',
     dataset: 'county_demog',
     viz: `@style: ramp($white_pop/$total_pop,ag_sunset)
 
-color: opacity(@style,0.9)
+color: opacity(@style,0.95)
 strokeColor: @style
 strokeWidth: 1
 `,
@@ -249,7 +201,7 @@ strokeWidth: 1
   },
   {
     id: 'alpha_normalize',
-    name: 'Data driven opacity expression',
+    name: 'Data Driven Opacity Expression',
     username: 'cartovl',
     dataset: 'table_30',
     viz: `@style: opacity(ramp(linear($sum_qpf,1,120),temps),($e_totpop/$area_sqmi)/300)
@@ -264,34 +216,84 @@ strokeColor: @style
     }
   },
   {
-    id: 'cordoba_cadastral_animation',
-    name: 'Cordoba cadastral data animation',
+    id: 'manual_classification',
+    name: 'Manual Classification',
+    username: 'cartovl',
+    dataset: 'county_demog',
+    viz: `@edu: buckets($higher_ed,[30,50,70])
+@color: reverse(purpor)
+    
+color: opacity(ramp(@edu,@color),0.95)
+strokeColor: ramp(@edu,@color)
+strokeWidth: 1
+`,
+    mapState: {
+      longitude: -103.456792,   
+      latitude: 38.012550,
+      zoom: 4
+    }
+  },
+  {
+    id: 'animation_cumulative',
+    name: 'Cumulative Animation',
     username: 'cartovl',
     dataset: 'cordoba_catastro',
     sql: 'select * from cordoba_catastro where year > 1900',
     viz: `strokeWidth: 0
-color: ramp($year, purpor)
+color: ramp($year, ag_sunset)
 filter: animation($year, 20, fade(0.1, hold))
 `,
     mapState: {
       latitude: 37.87,
       longitude: -4.79,
-      zoom: 11
+      zoom: 12
     }
   },
   {
-    id: 'denver_accidents',
-    name: 'Denver accidents',
+    id: 'animate_width',
+    name: 'Feature Width Animation',
     username: 'cartovl',
-    dataset: 'traffic_accidents',
-    viz: `width: $count/2
-  color: opacity(ramp(linear($count, 0,120), RedOr), $count/20)
-  strokeWidth: 0
-  `,
+    dataset: 'seattle_collisions',
+    viz: ` width: ramp(linear($personcount, 2, 5), [5, 20]) * animation(linear($incdate), 20,fade(1, 1))
+color: opacity(turquoise, 0.8)
+strokeWidth: 0
+`,
     mapState: {
-      latitude: 39.74961937824622,
-      longitude: -104.96505621566746,
-      zoom: 11
+      longitude: -122.314732, 
+      latitude: 47.622154,
+      zoom: 10
+    }
+  },
+  {
+    id: 'animation_segments',
+    name: 'Segmented Line Animation',
+    username: 'cartovl',
+    dataset: 'locations_2018_v2',
+    viz: `width: ramp($num,[2,8])
+color:  ramp(linear($animating_id,-200,1800),[#00ccff,#ff00cc])
+filter: animation(linear($animating_id,-200,1800),5,fade(0.1,0.5))+0.04
+`,
+    mapState: {
+      longitude: 0.9022, 
+      latitude: 32.5958,
+      zoom: 2
+    }
+  },
+  {
+    id: 'animation_multivariate',
+    name: 'Multivariate Animation',
+    username: 'cartovl',
+    dataset: 'spend_data',
+    viz: `width: sqrt($amount)
+color: rgba(255,255,255,0.2)
+strokeColor: ramp(top($category,5),vivid)
+strokeWidth: 1
+filter: animation(linear($tx_date_proc,time('2012-03-01T00:00:07Z'),time('2012-03-02T23:59:57Z')),30,fade(0,0.5))
+`,
+    mapState: {
+      longitude: 2.170892, 
+      latitude: 41.386482,
+      zoom: 12.5
     }
   }
 ];
