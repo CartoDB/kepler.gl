@@ -41,6 +41,10 @@ const StyledHeader = styled.h2`
   margin-bottom: 0;
 `
 
+const StyledErrorText = styled.p`
+  color: #F44;
+`
+
 const StyledButton = formElement(Button);
 
 const TYPE_MAP = {
@@ -50,6 +54,22 @@ const TYPE_MAP = {
   real: 'real',
   geojson: 'json'
 };
+
+const UploadStatus = styled(({ id, label, status, error }) => (
+  <div>
+    <div>
+      {
+        id === 'map'
+          ? `Map config (${status.toUpperCase()})`
+          : `Dataset ${label} as kepler_${id} (${status.toUpperCase()})`
+      }
+    </div>
+    
+    <StyledErrorText>{ error }</StyledErrorText>
+  </div>
+))`
+    margin: 8px 0;
+`
 
 export default class ExportCartoModal extends Component {
 
@@ -61,10 +81,14 @@ export default class ExportCartoModal extends Component {
       userName: localStorage.getItem('carto.username') || '',
       mapName: '',
       filtered: false,
-      status: 'idle', // 'idle', 'uploading'
-      uploading: null
+      status: 'idle', // 'fetching', 'idle', 'uploading'
+      mapUploading: null,
+      uploading: null,
+      error: null
     };
   }
+
+  _timeoutId = null
 
   _onChangeApiKey = (e) => {
     const apiKey = e.target.value;
@@ -90,6 +114,46 @@ export default class ExportCartoModal extends Component {
     this.setState({
       mapName: e.target.value
     });
+
+    this.setState({
+      status: 'fetching',
+      error: null
+    });
+
+    clearTimeout(this._timeoutId);
+
+    const mapName = e.target.value;
+
+    this._timeoutId = setTimeout(() => {
+      this._checkMapExists(mapName);
+    }, 500)
+  }
+
+  _checkMapExists = (mapName) => {
+    if (!this.state.userName || !this.state.apiKey) {
+      return;
+    }
+
+    const query = `SELECT * FROM kepler_gl_maps where name='${mapName}'`
+
+    fetch(`https://${this.state.userName}.carto.com/api/v2/sql?q=${query}&api_key=${this.state.apiKey}`)
+      .then(response => response.json())
+      .then(response => {
+        const newState = {
+          status: 'idle'
+        };
+
+        if (response.rows.length > 0) {
+          this.setState({
+            ...status,
+            error: 'Map already exists'
+          });
+
+          return;
+        }
+
+        this.setState(newState);
+      });
   }
 
   _getCSVGeometry = (data, geojsonIndex) => {
@@ -137,21 +201,44 @@ export default class ExportCartoModal extends Component {
     const formData = new FormData();
     formData.append('q', transactionQuery);
 
-    // TODO: show state in UI
-    fetch(`https://roman-carto.carto.com/api/v2/sql?api_key=${this.state.apiKey}`, {
+    this.setState({
+      mapUploading: {
+        id: 'map',
+        label: 'Map Config',
+        status: 'uploading',
+        error: null
+      }
+    });
+
+    fetch(`https://${this.state.userName}.carto.com/api/v2/sql?api_key=${this.state.apiKey}`, {
       method: 'POST',
       body: formData
     })
       .then(response => response.json())
       .then(response => {
+
         if (response.error) {
-          console.error(response.error);
+          this.setState({
+            mapUploading: {
+              ...this.state.mapUploading,
+              status: 'error',
+              error: response.detail
+            }
+          });
+
           return;
         }
+
+        this.setState({
+          mapUploading: {
+            ...this.state.mapUploading,
+            status: 'uploaded'
+          }
+        });
       });
   }
 
-  _onSave = (e) => {
+  _onSave = () => {
     if (!this.state.mapName) {
       return;
     }
@@ -174,7 +261,8 @@ export default class ExportCartoModal extends Component {
       uploading[dataset.id] = {
         id: dataset.id,
         label: dataset.label,
-        status: 'uploading'
+        status: 'uploading',
+        error: null
       };
     });
 
@@ -214,7 +302,7 @@ export default class ExportCartoModal extends Component {
         COMMIT;
       `;
 
-      fetch(`https://roman-carto.carto.com/api/v1/sql?q=${transactionQuery}&api_key=${this.state.apiKey}`)
+      fetch(`https://${this.state.userName}.carto.com/api/v1/sql?q=${transactionQuery}&api_key=${this.state.apiKey}`)
         .then(response => response.json())
         .then(responseData => {
 
@@ -245,7 +333,7 @@ export default class ExportCartoModal extends Component {
           const file = new Blob([csv]);
     
           const xhr = new XMLHttpRequest();
-          xhr.open('POST', `https://roman-carto.carto.com/api/v2/sql/copyfrom?api_key=${this.state.apiKey}&q=${query}`);
+          xhr.open('POST', `https://${this.state.userName}.carto.com/api/v2/sql/copyfrom?api_key=${this.state.apiKey}&q=${query}`);
 
           xhr.onreadystatechange = () => {
             if (xhr.status === 200 && xhr.readyState === 4) {
@@ -271,9 +359,23 @@ export default class ExportCartoModal extends Component {
         <div>
           <StyledHeader>Uploading to CARTO</StyledHeader>
           {
-            Object.values(this.state.uploading).map((uploadingStatus) => <div key={uploadingStatus.id}>
-              {uploadingStatus.label} as kepler_{uploadingStatus.id} ({uploadingStatus.status.toUpperCase()})
-            </div>)
+            <UploadStatus 
+              id={this.state.mapUploading.id}
+              label={this.state.mapUploading.label}
+              status={this.state.mapUploading.status}
+              error={this.state.mapUploading.error}
+            />
+          }
+          {
+            Object.values(this.state.uploading).map(
+              (uploadingStatus) => <UploadStatus
+                key={uploadingStatus.id}
+                id={uploadingStatus.id}
+                label={uploadingStatus.label}
+                status={uploadingStatus.status}
+                error={uploadingStatus.error}
+              />
+            )
           }
           <Button
             onClick={this.setIdle}
@@ -284,8 +386,23 @@ export default class ExportCartoModal extends Component {
       );
     }
 
+    const disableUpload = this.state.mapName.length === 0 ||
+      this.state.status === 'fetching' ||
+      this.state.error !== null ||
+      this.state.userName.length === 0 ||
+      this.state.apiKey.length === 0;
+
+    console.log(this.state.status);
+
     return (
       <div>
+        <div>
+          <StyledHeader>Save map as...</StyledHeader>
+          <StyledLabel>
+            Map name
+            <Input type="text" value={this.state.mapName} onChange={this._onChangeMapName} />
+          </StyledLabel>
+        </div>
         <div>
           <StyledHeader>CARTO credentials</StyledHeader>
           <StyledLabel>
@@ -297,14 +414,12 @@ export default class ExportCartoModal extends Component {
             <Input type="text" value={this.state.userName} onChange={this._onChangeUserName} />
           </StyledLabel>
         </div>
-        <div>
-          <StyledHeader>Save map as...</StyledHeader>
-          <StyledLabel>
-            Map name
-            <Input type="text" value={this.state.mapName} onChange={this._onChangeMapName} />
-          </StyledLabel>
-        </div>
-        <StyledButton onClick={this._onSave}>Save to CARTO</StyledButton>
+        <StyledButton
+          onClick={this._onSave}
+          disabled={disableUpload}>
+            Save to CARTO
+        </StyledButton>
+        <StyledErrorText>{this.state.error}</StyledErrorText>
       </div>
     );
   }
