@@ -20,26 +20,23 @@
 
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import {Input} from '../../components/common/styled-components';
+import ItemSelector from '../../components/common/item-selector/item-selector';
 import demos from './carto-demos';
 
 const FormElement = (component) => styled(component)`
   width: 100%;
-  margin-bottom: 8px;
+  margin-top: 16px;
 `;
 
 const VizArea = FormElement(styled.textarea`
-  resize: vertical
+  ${props => props.theme.input}
+  resize: vertical;
+  transition: none;
+  height: auto;
 `);
 
-const Input = FormElement(styled.input`
-`);
-
-const StyledSelect = FormElement(styled.select`
-`);
-
-const Header = styled.h4`
-  color: ${props => props.theme.titleTextColor};
-`;
+const StyledInput = FormElement(Input);
 
 const ErrorText = styled.p`
   color: red;
@@ -52,24 +49,16 @@ export default class CartoManager extends Component {
     super(props);
 
     this.state = { 
-      demo: {},
+      demo: null,
       error: null
     };
   }
 
-  onSelectExample = (e) => {
-    const value = e.target.value;
+  onSelectExample = (demo) => {
+    this.props.updateMap(demo.mapState);
 
-    if (value === 'demo') {
-      return;
-    }
-
-    const selectedDemo = demos.find((demo) => demo.id === e.target.value);
-
-    this.props.updateMap(selectedDemo.mapState);
-
-    this.updateDemo(selectedDemo);
-    this.reloadDemo(selectedDemo);
+    this.updateDemo(demo);
+    this.reloadDemo(demo);
   }
 
   _changeUsername = (e) => {
@@ -140,29 +129,38 @@ export default class CartoManager extends Component {
 
   _getForm() {
     return (<div>
-      <Input type='text' onChange={this._changeUsername} placeholder='CARTO username' value={this.state.demo.username || ''} />
-      <Input type='text' onChange={this._changeApiKey} placeholder='API key (defaults to default_public)' value={this.state.demo.apiKey || ''} />
-      <Input type='text' onChange={this._changeDataset} placeholder='Dataset' value={this.state.demo.dataset || ''} />
-      <Input type='text' onChange={this._changeSQL} placeholder='SQL query (overrides dataset)' value={this.state.demo.sql || ''} />
-      <VizArea rows='10' onChange={this._changeViz} placeholder='Viz string' value={this.state.demo.viz || ''}></VizArea>
+      <StyledInput type='text' onChange={this._changeUsername} placeholder='CARTO username' value={this.state.demo.username || ''} />
+      <StyledInput type='text' onChange={this._changeApiKey} placeholder='API key (defaults to default_public)' value={this.state.demo.apiKey || ''} />
+      <StyledInput type='text' onChange={this._changeDataset} placeholder='Dataset' value={this.state.demo.dataset || ''} />
+      <StyledInput type='text' onChange={this._changeSQL} placeholder='SQL query (overrides dataset)' value={this.state.demo.sql || ''} />
+      <VizArea
+        spellcheck="false"
+        rows='10'
+        onChange={this._changeViz}
+        placeholder='Viz string' value={this.state.demo.viz || ''}>
+      </VizArea>
     </div>)
   }
 
   render() {
-    const selectBox = (<StyledSelect onChange={this.onSelectExample}>
-      <option value='demo'>
-        Carto visualizations
-      </option>
-      {demos.map((demo) => (
-        <option key={demo.id} value={demo.id}>{demo.name}</option> 
-      ))}
-    </StyledSelect>);
+    const selectBoxCool = (
+      <ItemSelector
+        multiSelect={false}
+        options={demos}
+        displayOption={'name'}
+        getOptionValue={(demo) => demo}
+        filterOption={'name'}
+        placeholder='Select an example'
+        onChange={this.onSelectExample}
+        selectedItems={this.state.demo === null ? null : this.state.demo}
+      >
+      </ItemSelector>
+    )
 
     const form = !this.state.demo ? null : this._getForm();
 
     return (<div>
-      <Header>Pick an example from below</Header>
-      {selectBox}
+      {selectBoxCool}
       {form}
       {this.state.error && <ErrorText>
         {this.state.error.name}:{this.state.error.type}
