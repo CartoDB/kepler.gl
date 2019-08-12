@@ -113,7 +113,7 @@ export const DEFAULT_FEATURE_FLAGS = {
 
 export const AUTH_TOKENS = {
   CARTO_CLIENT_ID: 'Q0G-LSJBLYWk',
-  MAPBOX_TOKEN: process.env.MapboxAccessToken, // eslint-disable-line
+  MAPBOX_TOKEN: 'pk.eyJ1IjoidmljdG9yLWNhcnRvIiwiYSI6ImNqejhuc2Z6NzAwajMzcW1uZDN3Ym95ZDIifQ.fCQc_6Va7AJOSVTLNJaHTw', // eslint-disable-line
   DROPBOX_CLIEND_ID: process.env.DropboxClientId, // eslint-disable-line
   EXPORT_MAPBOX_TOKEN: process.env.MapboxExportToken, // eslint-disable-line
 };
