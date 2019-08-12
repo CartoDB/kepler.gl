@@ -34,6 +34,7 @@ const VizArea = FormElement(styled.textarea`
   resize: vertical;
   transition: none;
   height: auto;
+  overflow: auto;
 `);
 
 const StyledInput = FormElement(Input);
