@@ -20,7 +20,7 @@
 
 import React, {Component} from 'react';
 import styled from 'styled-components';
-import {Input} from 'kepler.gl/components/common/styled-components';
+import {Input} from 'kepler.gl/components';
 import CartoMap from './carto-map';
 
 const formElement = (element) => styled(element)`
@@ -37,6 +37,10 @@ const StyledLabel = formElement(styled.label`
 
 const StyledHeader = styled.h2`
   margin-bottom: 0;
+`
+
+const StyledErrorText = styled.p`
+  color: #F44;
 `
 
 export default class CartoMaps extends Component {
@@ -157,6 +161,10 @@ export default class CartoMaps extends Component {
   }
 
   _renderMaps() {
+    if (this.state.error) {
+      return <StyledErrorText>{this.state.error}</StyledErrorText>
+    }
+
     return this.state.maps.length === 0 ? 'No maps :(' : this.state.maps.map((map) => (
       <CartoMap key={map.name} name={map.name} onDelete={this._onMapDelete} onLoad={this._onMapLoad} />
     ));
@@ -176,12 +184,18 @@ export default class CartoMaps extends Component {
             <Input type="text" value={this.state.userName} onChange={this._onChangeUserName} />
           </StyledLabel>
         </div>
-        <div>
-          <StyledHeader>kepler.gl maps saved in CARTO</StyledHeader>
-          {
-            this.state.status === 'fetching' ? 'Loading' : this._renderMaps()
-          }
-        </div>
+        {
+          (this.state.apiKey.length === 0 || this.state.userName.length === 0)
+          ? null
+          : <div>
+              <StyledHeader>kepler.gl maps saved in CARTO</StyledHeader>
+              {
+                this.state.status === 'fetching' 
+                  ? 'Loading' 
+                  : this._renderMaps()
+              }
+            </div>
+        }
       </div>);
   }
 }
