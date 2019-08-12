@@ -20,8 +20,9 @@
 
 import React, {Component} from 'react';
 import styled from 'styled-components';
-import {Input} from 'kepler.gl/components';
+import {Input, withState} from 'kepler.gl/components';
 import CartoMap from './carto-map';
+import { loadCartoSample } from '../../actions';
 
 const formElement = (element) => styled(element)`
   margin-top: 8px;
@@ -43,7 +44,7 @@ const StyledErrorText = styled.p`
   color: #F44;
 `
 
-export default class CartoMaps extends Component {
+class CartoMaps extends Component {
 
   constructor(props) {
     super(props);
@@ -123,7 +124,7 @@ export default class CartoMaps extends Component {
   _onChangeApiKey = (e) => {
     const apiKey = e.target.value;
 
-    localStorage.setItem('carto.apiKey', apiKey);
+    localStorage.setItem('carto.token', apiKey);
 
     this.setState({
       apiKey
@@ -158,6 +159,8 @@ export default class CartoMaps extends Component {
     // Find datasets from the map config, merge and fire appropriate events.
 
     console.log('Loading map', mapName, map);
+
+    this.props.onLoadCartoSample(map.config);
   }
 
   _renderMaps() {
@@ -199,3 +202,13 @@ export default class CartoMaps extends Component {
       </div>);
   }
 }
+
+const CartoMapsWithState = withState(
+  [],
+  state => ({...state.demo.app}),
+  {
+    onLoadCartoSample: loadCartoSample
+  }
+)(CartoMaps);
+
+export default CartoMapsWithState;
