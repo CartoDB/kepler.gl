@@ -238,6 +238,8 @@ export function loadCartoSample(cfg) {
 
         dispatch(loadRemoteResourceSuccess(datasets, cfg, options));
       });
+    
+    dispatch(setLoadingMapStatus(true));
   }
 }
 
