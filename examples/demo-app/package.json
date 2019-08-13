@@ -5,7 +5,7 @@
     "build": "webpack -p --env.prod --progress",
     "start-local": "webpack-dev-server --mode development --https --env.es6 --progress --hot --open",
     "start-local-deck": "webpack-dev-server --mode development --env.es6 --env.deck --progress --hot --open",
-    "now-publish": "yarn build && cp index.html ./build/index.html && now ./build -A ../now.json --public"
+    "now-publish": "yarn build && cp index.html ./build/index.html && now ./build -A ../now.json --public && now alias"
   },
   "dependencies": {
     "d3-request": "^1.0.6",
