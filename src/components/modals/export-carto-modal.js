@@ -343,7 +343,10 @@ export default class ExportCartoModal extends Component {
             return;
           }
 
-          const realFields = [{ name: 'the_geom', type: 'string', id: 'the_geom', tableFieldIndex: 1 }, ...fieldsWithoutGeojson];
+          const realFields = [
+            { name: 'the_geom', type: 'string', id: 'the_geom', tableFieldIndex: 1 }, 
+            ...fieldsWithoutGeojson.filter((field) => field.name !== 'the_geom')
+          ];
           const geoJsonPosition = fields.findIndex(f => f.name === '_geojson');
 
           const query = `COPY ${tableName} (${realFields.map((field) => field.name).join(', ')}) FROM STDIN WITH (FORMAT csv, HEADER true);`;
