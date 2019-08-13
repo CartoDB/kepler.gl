@@ -401,6 +401,7 @@ export default function ModalContainerFactory(
           case EXPORT_CARTO_ID:
             template = (
               <ExportCartoModal
+                closeModal={this._closeModal}
                 visState={visState}
                 mapState={mapState}
                 mapStyle={mapStyle}

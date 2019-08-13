@@ -277,7 +277,11 @@ export default class ExportCartoModal extends Component {
 
     if (!selectedDatasets.length) {
       // error: selected dataset not found.
-      this._closeModal();
+      this.setState({
+        error: 'Please add some data to your map before uploading to CARTO'
+      });
+
+      return;
     }
 
     const uploading = {};
@@ -383,6 +387,14 @@ export default class ExportCartoModal extends Component {
     this._saveMap(datasets_meta);
   }
 
+  _onClickDone = () => {
+    if (this.state.error) {
+      return this.setIdle();
+    }
+
+    this.props.closeModal();
+  }
+
   setIdle = () => {
     this.setState({
       status: 'idle',
@@ -415,9 +427,9 @@ export default class ExportCartoModal extends Component {
             )
           }
           <Button
-            onClick={this.setIdle}
+            onClick={this._onClickDone}
             disabled={Object.values(this.state.uploading).some((u) => u.status === 'uploading')}>
-              Done
+              OK
           </Button>
         </div>
       );
