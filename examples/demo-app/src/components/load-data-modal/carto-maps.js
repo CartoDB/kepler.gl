@@ -178,7 +178,7 @@ class CartoMaps extends Component {
 
     console.log('Loading map', mapName, map);
 
-    this.props.onLoadCartoSample(map.config);
+    this.props.onLoadCartoSample(map);
   }
 
   _renderMaps() {

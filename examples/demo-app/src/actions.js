@@ -220,20 +220,14 @@ export function loadSample(options, pushRoute = true) {
 
   Try to follow similar code path, but they do not support loading multiple layers on LOAD_REMOTE_RESOURCE_SUCCESS
 */
-export function loadCartoSample(cfg) {
+export function loadCartoSample({ config: cfg, dataset_meta: meta }) {
   return (dispatch) => {
-    const { config } = cfg;
 
-    const layers = config.visState.layers
-      .map(l => l.config.dataId)
-      .filter((value, idx, self) => self.indexOf(value) === idx);
-
-    Promise.all(loadCartoDatasets(layers))
+    Promise.all(loadCartoDatasets(meta.data))
       .then((datasets) => {
         const options = datasets.map((_d, i) => ({
-          id: layers[i],
-          // TODO, detect csv / geojson
-          dataUrl: '.csv'
+          id: meta.data[i].name,
+          dataUrl: `.${meta.data[i].format}`
         }));
 
         dispatch(loadRemoteResourceSuccess(datasets, cfg, options));
@@ -249,9 +243,9 @@ function loadCartoDatasets(layers) {
   const apiKey = localStorage.getItem('carto.token');
   
   for (const layer of layers) {
-    const query = `select * from kepler_${layer}`;
+    const query = `select * from ${layer.name}`;
     promises.push(
-      fetch(`https://${userName}.carto.com/api/v2/sql?api_key=${apiKey}&q=${query}&format=CSV`)
+      fetch(`https://${userName}.carto.com/api/v2/sql?api_key=${apiKey}&q=${query}&format=${layer.format}`)
         .then(response => {
           const contentType = response.headers.get('Content-Type');
 
