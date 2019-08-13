@@ -85,7 +85,8 @@ class CartoMaps extends Component {
       BEGIN;
         CREATE TABLE IF NOT EXISTS kepler_gl_maps (
           name varchar PRIMARY KEY,
-          config json
+          config json,
+          dataset_meta json
         );
 
         SELECT * FROM kepler_gl_maps;

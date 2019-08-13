@@ -140,7 +140,17 @@ export default class ExportCartoModal extends Component {
       return;
     }
 
-    const query = `SELECT * FROM kepler_gl_maps where name='${mapName}'`
+    const query = `
+      BEGIN;
+        CREATE TABLE IF NOT EXISTS kepler_gl_maps (
+          name varchar PRIMARY KEY,
+          config json,
+          dataset_meta json
+        );
+
+        SELECT * FROM kepler_gl_maps where name='${mapName}';
+      COMMIT;
+    `
 
     fetch(`https://${this.state.userName}.carto.com/api/v2/sql?q=${query}&api_key=${this.state.apiKey}`)
       .then(response => response.json())
@@ -197,19 +207,21 @@ export default class ExportCartoModal extends Component {
     });
   }
 
-  _saveMap = () => {
+  _saveMap = (meta) => {
     // It's not this props, it's { visState, mapState, mapStyle }
     const config = KeplerGlSchema.getConfigToSave(this.props);
+    const metaData = { data: meta };
 
     const transactionQuery = `
       BEGIN;
         CREATE TABLE IF NOT EXISTS kepler_gl_maps (
           name varchar PRIMARY KEY,
-          config json
+          config json,
+          dataset_meta json
         );
 
-        INSERT INTO kepler_gl_maps (name, config)
-        VALUES ('${this.state.mapName}', '${JSON.stringify(config)}');
+        INSERT INTO kepler_gl_maps (name, config, dataset_meta)
+        VALUES ('${this.state.mapName}', '${JSON.stringify(config)}', '${JSON.stringify(metaData)}');
       COMMIT;
     `;
 
@@ -258,8 +270,6 @@ export default class ExportCartoModal extends Component {
       return;
     }
 
-    this._saveMap();
-
     // TODO: Move this into _saveDatasets
     const {visState} = this.props;
     const {datasets} = visState;
@@ -286,12 +296,18 @@ export default class ExportCartoModal extends Component {
       uploading
     });
 
+    const datasets_meta = [];
+
     selectedDatasets.forEach(selectedData => {
       const {allData, data, fields, id} = selectedData;
       const exportData = this.state.filtered ? data : allData;
       const tableName = `kepler_${id}`;
 
       const fieldsWithoutGeojson = fields.filter(f => f.name !== '_geojson');
+      datasets_meta.push({
+        name: `kepler_${id}`,
+        format: fieldsWithoutGeojson.length === fields.length ? 'csv' : 'geojson'
+      });
 
       const columns = fieldsWithoutGeojson
         .map(field => {
@@ -360,6 +376,8 @@ export default class ExportCartoModal extends Component {
           xhr.send(file);
         });
     });
+
+    this._saveMap(datasets_meta);
   }
 
   setIdle = () => {
