@@ -149,9 +149,26 @@ class CartoMaps extends Component {
   _onMapDelete = (mapName) => {
     const map = this.state.maps.find((m) => m.name === mapName);
 
-    // Read datasets and delete them?
+    // eslint-disable-next-line no-alert
+    if (window.confirm('Are you sure?')) {
+      const query = `
+        BEGIN;
 
-    console.log('Deleting map', mapName, map);
+        ${map.dataset_meta.data.map(meta => `
+          DROP TABLE IF EXISTS ${meta.name};
+        `)}
+
+        DELETE FROM kepler_gl_maps WHERE name = '${mapName}';
+
+        COMMIT;
+        
+        `;
+
+      fetch(`https://${this.state.userName}.carto.com/api/v2/sql?api_key=${this.state.apiKey}&q=${query}`)
+        .then(() => {
+          this._triggerSearch(0);
+        });
+    }
   }
 
   _onMapLoad = (mapName) => {
