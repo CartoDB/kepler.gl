@@ -220,6 +220,50 @@ export function loadSample(options, pushRoute = true) {
 
   Try to follow similar code path, but they do not support loading multiple layers on LOAD_REMOTE_RESOURCE_SUCCESS
 */
+export function loadCartoSample(cfg) {
+  return (dispatch) => {
+    const { config } = cfg;
+
+    const layers = config.visState.layers
+      .map(l => l.config.dataId)
+      .filter((value, idx, self) => self.indexOf(value) === idx);
+
+    Promise.all(loadCartoDatasets(layers))
+      .then((datasets) => {
+        const options = datasets.map((_d, i) => ({
+          id: layers[i],
+          // TODO, detect csv / geojson
+          dataUrl: '.csv'
+        }));
+
+        dispatch(loadRemoteResourceSuccess(datasets, cfg, options));
+      });
+  }
+}
+
+function loadCartoDatasets(layers) {
+  const promises = [];
+  const userName = localStorage.getItem('carto.username');
+  const apiKey = localStorage.getItem('carto.token');
+  
+  for (const layer of layers) {
+    const query = `select * from kepler_${layer}`;
+    promises.push(
+      fetch(`https://${userName}.carto.com/api/v2/sql?api_key=${apiKey}&q=${query}&format=CSV`)
+        .then(response => {
+          const contentType = response.headers.get('Content-Type');
+
+          if (contentType.indexOf('csv') !== -1) {
+            return response.text();
+          }
+          
+          return response.json();
+        })
+    );
+  }
+
+  return promises;
+}
 
 /**
  * Load remote map with config and data
