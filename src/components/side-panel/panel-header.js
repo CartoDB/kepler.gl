@@ -193,7 +193,7 @@ const ExportCartoFactory = () => {
   );
 
   ExportCarto.defaultProps = {
-    label: 'Export to CARTO',
+    label: 'Save at CARTO',
     icon: <Carto />
   }
 
