@@ -27,5 +27,5 @@ DropboxHandler.setAuthToken(AUTH_TOKENS.DROPBOX_CLIEND_ID);
 CartoHandler.setAuthToken(AUTH_TOKENS.CARTO_CLIENT_ID);
 
 export const CLOUD_PROVIDERS = {
-  [CartoHandler.name]: CartoHandler
+  [DropboxHandler.name]: DropboxHandler
 };
