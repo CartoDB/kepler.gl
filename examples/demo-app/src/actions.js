@@ -226,7 +226,7 @@ export function loadCartoSample({ config: cfg, dataset_meta: meta }) {
     Promise.all(loadCartoDatasets(meta.data))
       .then((datasets) => {
         const options = datasets.map((_d, i) => ({
-          id: meta.data[i].name,
+          id: `${/^kepler_(.+)/.exec(meta.data[i].name)[1]}`,
           dataUrl: `.${meta.data[i].format}`
         }));
 
