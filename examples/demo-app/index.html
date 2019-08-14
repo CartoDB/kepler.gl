@@ -27,7 +27,7 @@
         );
         const viz = new carto.Viz(config.viz);
 
-        if (!layer) {
+        if (_map.getLayer('vl_layer') === undefined) {
           layer = new carto.Layer('vl_layer', source, viz);
           return layer.addTo(_map);
         } else {
