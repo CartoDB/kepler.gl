@@ -51,6 +51,7 @@ const TYPE_MAP = {
   string: 'text',
   integer: 'numeric',
   timestamp: 'timestamp',
+  boolean: 'boolean',
   real: 'real',
   geojson: 'json'
 };

@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "name": "kepler-gl-carto",
-  "alias": "kepler-gl-carto",
+  "name": "carto-kepler-gl",
+  "alias": "carto-kepler-gl",
   "static": {
       "rewrites": [
           { "source": "**", "destination": "/index.html" }
