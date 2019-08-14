@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "name": "kepler-gl-carto",
+  "alias": "kepler-gl-carto",
+  "static": {
+      "rewrites": [
+          { "source": "**", "destination": "/index.html" }
+      ]
+  }
+}
