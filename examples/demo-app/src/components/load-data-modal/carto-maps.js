@@ -156,12 +156,11 @@ class CartoMaps extends Component {
 
         ${map.dataset_meta.data.map(meta => `
           DROP TABLE IF EXISTS ${meta.name};
-        `)}
+        `).join('\n')}
 
         DELETE FROM kepler_gl_maps WHERE name = '${mapName}';
 
         COMMIT;
-        
         `;
 
       fetch(`https://${this.state.userName}.carto.com/api/v2/sql?api_key=${this.state.apiKey}&q=${query}`)
