@@ -191,6 +191,44 @@ export const DEFAULT_LAYER_GROUPS = [
   }
 ];
 
+export const CARTO_LAYER_GROUPS = [
+  {
+    slug: 'label',
+    filter: ({id}) => id.match(/(?=(label|poi_|place_|watername|roadname|waterway_label))/),
+    defaultVisibility: true
+  },
+  {
+    slug: 'road',
+    filter: ({id}) => id.match(/(?=(road|rail|tunnel|bridge))/),
+    defaultVisibility: true
+  },
+  {
+    slug: 'border',
+    filter: ({id}) => id.match(/boundary/),
+    defaultVisibility: false
+  },
+  {
+    slug: 'building',
+    filter: ({id}) => id.match(/building/),
+    defaultVisibility: true
+  },
+  {
+    slug: 'water',
+    filter: ({id}) => id.match(/(?=(water))/),
+    defaultVisibility: true
+  },
+  {
+    slug: 'land',
+    filter: ({id}) => id.match(/(?=(landcover|park_national|park_nature|landuse|stadium))/),
+    defaultVisibility: true
+  },
+  {
+    slug: '3d building',
+    filter: () => false,
+    defaultVisibility: false
+  }
+];
+
 export const DEFAULT_MAP_STYLES = [
   {
     id: 'dark',
@@ -225,19 +263,19 @@ export const DEFAULT_MAP_STYLES = [
     label: 'CARTO Dark Matter',
     url: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
     icon: `${CARTOCDN_KEPLER}/dark_matter.png`,
-    layerGroups: DEFAULT_LAYER_GROUPS
+    layerGroups: CARTO_LAYER_GROUPS
   },{
     id: 'carto/positron',
     label: 'CARTO Positron',
     url: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
     icon: `${CARTOCDN_KEPLER}/positron.png`,
-    layerGroups: DEFAULT_LAYER_GROUPS
+    layerGroups: CARTO_LAYER_GROUPS
   },{
     id: 'carto/voyager',
     label: 'CARTO Voyager',
     url: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
     icon: `${CARTOCDN_KEPLER}/voyager.png`,
-    layerGroups: DEFAULT_LAYER_GROUPS
+    layerGroups: CARTO_LAYER_GROUPS
   }
 ];
 
