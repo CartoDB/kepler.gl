@@ -321,7 +321,7 @@ export default class ExportCartoModal extends Component {
             console.error('Unknown field type:', field.type);
           }
 
-          return `${field.name} ${TYPE_MAP[field.type]}`;
+          return `"${field.name}" ${TYPE_MAP[field.type]}`;
         });
 
       const transactionQuery = `
@@ -354,7 +354,7 @@ export default class ExportCartoModal extends Component {
           ];
           const geoJsonPosition = fields.findIndex(f => f.name === '_geojson');
 
-          const query = `COPY ${tableName} (${realFields.map((field) => field.name).join(', ')}) FROM STDIN WITH (FORMAT csv, HEADER true);`;
+          const query = `COPY ${tableName} (${realFields.map((field) => `"${field.name}"`).join(', ')}) FROM STDIN WITH (FORMAT csv, HEADER true);`;
 
           const realData = exportData.map((d) => {
             const csvGeom = this._getCSVGeometry(d, geoJsonPosition);
