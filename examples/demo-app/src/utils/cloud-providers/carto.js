@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 import React from 'react';
-import {OAuthApp} from '@carto/toolkit';
+import {App} from '@carto/toolkit';
 import DropboxIcon from '../../components/icons/carto-icon';
 import SharingUrl from '../../components/sharing/sharing-url';
 import {formatCsv} from 'processors/data-processor';
@@ -28,9 +28,8 @@ import get from 'lodash.get';
 import {loadRemoteResourceSuccess,setLoadingMapStatus} from '../../actions';
 
 const NAME = 'carto';
-const carto = new OAuthApp({
-  scopes: 'schemas:c'
-}, {
+const carto = new App({
+  server: localStorage.getItem('carto.server') || 'https://{user}.carto-staging.com/',
   namespace: 'keplergl'
 });
 
@@ -43,7 +42,15 @@ function setAuthToken(authToken) {
     return;
   }
 
-  carto.setClientID(authToken);
+  const username = localStorage.getItem('carto.username');
+  const apiKey = localStorage.getItem('carto.masterKey');
+
+  if (!username || !apiKey) {
+    console.error('Please set carto.username and carto.masterKey on localstorage');
+    return;
+  }
+
+  carto.setCredentials(apiKey, username);
 }
 
 /**
@@ -73,7 +80,7 @@ async function uploadFile({blob, name: fileName, isPublic = true}) {
   console.log(result);
 
   return ({
-    url: `demo/map/carto/${result.id}`
+    url: `demo/map/carto/${result.id}?owner=${carto.username}`
   });
 }
 
@@ -107,17 +114,14 @@ function handleLogin(onCloudLoginSuccess) {
  * from localStorage automatically
  */
 function getAccessToken() {
-  if (carto.oauth.expired) {
-    return null;
-  }
-
-  return carto.oauth.expired ? null : carto.oauth.token;
+  return localStorage.getItem('carto.masterKey');
 }
 
 function loadMap(mapId, queryParams) {
+  const { owner: username } = queryParams;
   return dispatch => {
     dispatch(setLoadingMapStatus(true));
-    carto.PublicStorageReader.getVisualization('roman-carto', mapId).then((result) => {
+    carto.PublicStorageReader.getVisualization(username, mapId).then((result) => {
       // These are the options required for the action. For now, all datasets that come from CARTO are CSV
       const options = result.datasets.map((dataset) => ({
         // TODO: customStorage should return dataset name without prefix

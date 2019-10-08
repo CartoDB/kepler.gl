@@ -2,6 +2,7 @@
   "scripts": {
     "start": "webpack-dev-server --mode development --progress --hot --open",
     "start-prod": "webpack-dev-server -p --progress --hot --open",
+    "build": "webpack -p --env.prod --progress --verbose",
     "start-local": "webpack-dev-server --mode development --https --env.es6 --progress --hot --open",
     "start-local-deck": "webpack-dev-server --mode development --env.es6 --env.deck --progress --hot --open"
   },
@@ -23,7 +24,7 @@
     "redux-actions": "^2.2.1",
     "redux-thunk": "^1.0.0",
     "styled-components": "^4.1.3",
-    "@carto/toolkit": "0.0.1-rc.6"
+    "@carto/toolkit": "0.0.1-rc.7"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
