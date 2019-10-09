@@ -33,6 +33,20 @@ const carto = new App({
   namespace: 'keplergl'
 });
 
+async function resetCartoIntegration() {
+  const cs = await carto.CustomStorage;
+
+  // eslint-disable-next-line no-console
+  console.log('Destroying CARTO Kepler integration tables...');
+
+  await cs.destroy();
+
+  // eslint-disable-next-line no-console
+  console.log('Your tables have been successfully destroyed');
+}
+
+window.resetCartoIntegration = resetCartoIntegration;
+
 /**
  * Set the auth toke to be used with carto client
  * @param authToken
