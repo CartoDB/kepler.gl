@@ -30,9 +30,11 @@ import {push} from 'react-router-redux';
 
 const NAME = 'carto';
 const carto = new OAuthApp({
+  authorization: 'https://carto-staging.com/oauth2',
   scopes: 'schemas:c'
 }, {
-  namespace: 'keplergl'
+  namespace: 'keplergl',
+  server: 'https://{user}.carto-staging.com/'
 });
 
 /**
