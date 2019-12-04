@@ -59,7 +59,6 @@ const StyledPanelAction = styled.div.attrs({
   height: 26px;
   justify-content: space-between;
   margin-left: 4px;
-  ${props => props.hasLabel ? 'width: 70px' : ''}
   padding: 5px;
   font-weight: bold;
   p {
