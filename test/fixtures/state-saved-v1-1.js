@@ -837,14 +837,14 @@ export const v0ExpectedFields = [
 
 export const mergedFilters = [
   {
-    dataId: 'a5ybmwl2d',
+    dataId: ['a5ybmwl2d'],
     freeze: true,
     id: '9ca0l7p2a',
     enlarged: false,
     isAnimating: false,
-    name: 'zip_area',
+    name: ['zip_area'],
     type: 'range',
-    fieldIdx: 3,
+    fieldIdx: [3],
     domain: [0, 48.1],
     value: [0, 21.8],
     step: 0.1,

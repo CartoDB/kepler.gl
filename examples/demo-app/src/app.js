@@ -30,10 +30,12 @@ import Announcement from './components/announcement';
 import {replaceLoadDataModal} from './factories/load-data-modal';
 import {replaceSaveMap} from './factories/save-map';
 import {replaceMapControl} from './factories/map-control';
+import {replacePanelHeader} from './factories/panel-header';
 import ExportUrlModal from './components/sharing/export-url-modal';
 import ConnectBackendStorageModal from './components/backend-storage-modal/connect-backend-storage-modal';
 import {AUTH_TOKENS} from './constants/default-settings';
-import {CLOUD_PROVIDERS} from './utils/cloud-providers';
+import {getCloudProvider} from './cloud-providers';
+
 import {
   exportFileToCloud,
   loadRemoteMap,
@@ -44,7 +46,8 @@ import {
 const KeplerGl = require('kepler.gl/components').injectComponents([
   replaceLoadDataModal(),
   replaceSaveMap(),
-  replaceMapControl()
+  replaceMapControl(),
+  replacePanelHeader()
 ]);
 
 // Sample data
@@ -62,6 +65,7 @@ import {processCsvData, processGeojson} from 'kepler.gl/processors';
 
 const BannerHeight = 30;
 const BannerKey = 'kgHideBanner-iiba';
+const keplerGlGetState = state => state.demo.keplerGl;
 
 const GlobalStyle = styled.div`
   font-family: ff-clan-web-pro, 'Helvetica Neue', Helvetica, sans-serif;
@@ -99,16 +103,16 @@ class App extends Component {
     height: window.innerHeight
   };
 
-  componentWillMount() {
+  componentDidMount() {
     // if we pass an id as part of the url
     // we ry to fetch along map configurations
     const {
       params: {id, provider} = {},
-      location: {query = {}}
+      location: {query = {}} = {}
     } = this.props;
 
     if (provider) {
-      const providerHandler = CLOUD_PROVIDERS[provider];
+      const providerHandler = getCloudProvider(provider);
 
       if (providerHandler) {
         this.props.dispatch(providerHandler.loadMap(query));
@@ -127,9 +131,7 @@ class App extends Component {
       // TODO?: validate map url
       this.props.dispatch(loadRemoteMap({dataUrl: query.mapUrl}));
     }
-  }
 
-  componentDidMount() {
     // delay zs to show the banner
     // if (!window.localStorage.getItem(BannerKey)) {
     //   window.setTimeout(this._showBanner, 3000);
@@ -300,12 +302,12 @@ class App extends Component {
     });
   };
 
-  _onExportToCloud = (provider) => {
-    this.props.dispatch(exportFileToCloud(provider));
+  _onExportToCloud = (providerName) => {
+    this.props.dispatch(exportFileToCloud(providerName));
   };
 
-  _onCloudLoginSuccess = (provider) => {
-    this.props.dispatch(setCloudLoginSuccess(provider));
+  _onCloudLoginSuccess = (providerName) => {
+    this.props.dispatch(setCloudLoginSuccess(providerName));
   };
 
   _getMapboxRef = (mapbox, index) => {
@@ -383,7 +385,7 @@ class App extends Component {
                   /*
                    * Specify path to keplerGl state, because it is not mount at the root
                    */
-                  getState={state => state.demo.keplerGl}
+                  getState={keplerGlGetState}
                   width={width}
                   height={height - (showBanner ? BannerHeight : 0)}
                   onSaveMap={this._isCloudStorageEnabled() && this._toggleCloudModal}

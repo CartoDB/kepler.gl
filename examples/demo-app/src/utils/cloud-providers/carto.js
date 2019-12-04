@@ -20,7 +20,7 @@
 
 import React from 'react';
 import {OAuthApp} from '@carto/toolkit';
-import DropboxIcon from '../../components/icons/carto-icon';
+import CartoIcon from '../../components/icons/carto-icon';
 import SharingUrl from '../../components/sharing/sharing-url';
 import {formatCsv} from 'processors/data-processor';
 import {getMapPermalink} from '../url';
@@ -62,7 +62,7 @@ async function uploadFile({blob, name: fileName, isPublic = true}) {
 
   const cartoDatasets = datasets.map(convertDataset);
 
-  const cs = await carto.CustomStorage;
+  const cs = await carto.getCustomStorage();
 
   const result = await cs.createVisualization({
     name: fileName,
@@ -71,7 +71,7 @@ async function uploadFile({blob, name: fileName, isPublic = true}) {
   }, cartoDatasets, true);
 
   return ({
-    url: `demo/map/carto/${result.id}?owner=${cs.username}`
+    url: `demo/map/carto?mapId=${result.id}&owner=${carto.username}`
   });
 }
 
@@ -124,11 +124,18 @@ function loadMap(queryParams) {
     dispatch(setLoadingMapStatus(true));
     carto.PublicStorageReader.getVisualization(username, mapId).then((result) => {
       // These are the options required for the action. For now, all datasets that come from CARTO are CSV
-      const options = result.datasets.map((dataset) => ({
-        // TODO: customStorage should return dataset name without prefix
-        id: dataset.name.split('keplergl_public_v0_')[1],
-        dataUrl: '.csv'
-      }));
+      const options = result.datasets.map((dataset) => {
+        const datasetId = dataset.name;
+
+        return {
+          id: datasetId,
+          label: datasetId,
+          description: dataset.description,
+          dataUrl: '',
+          configUrl: '',
+          panelDisabled: true
+        };
+      });
 
       const datasets = result.datasets.map((dataset) => dataset.file);
 
@@ -150,7 +157,7 @@ export default {
   getAccessToken,
   getAccessTokenFromLocation,
   handleLogin,
-  icon: DropboxIcon,
+  icon: CartoIcon,
   setAuthToken,
   loadMap,
   renderMeta,

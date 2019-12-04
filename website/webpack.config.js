@@ -99,6 +99,7 @@ const COMMON_CONFIG = {
       'kepler.gl': libSources,
       react: resolve(rootDir, './node_modules/react'),
       'styled-components': resolve(rootDir, './node_modules/styled-components'),
+      'react-redux': resolve(rootDir, './node_modules/react-redux'),
       'react-palm': resolve(rootDir, './node_modules/react-palm')
     }
   },
@@ -212,7 +213,7 @@ module.exports = env => {
     if (!process.env.CartoClientId) {
       logError('Error! CartoClientId is not defined');
       logInstruction(`Make sure to run "export CartoClientId=<token>" before deploy the website`);
-      logInstruction('You can get the token at https://www.dropbox.com/developers');
+      logInstruction('You can get the token at https://carto.com/developers/fundamentals/oauth-apps/');
       throw new Error('Missing Export CartoClientId Access token');
     }
     if (!process.env.MapboxExportToken) {

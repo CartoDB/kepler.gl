@@ -18,15 +18,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import DropboxHandler from './dropbox';
-import CartoHandler from './carto';
-import {AUTH_TOKENS} from '../../constants/default-settings';
+import {createContext} from 'react';
 
-// configure all clients with the right configuration
-DropboxHandler.setAuthToken(AUTH_TOKENS.DROPBOX_CLIEND_ID);
-CartoHandler.setAuthToken(AUTH_TOKENS.CARTO_CLIENT_ID);
+const identity = state => state;
+// New Context API only supported after 16.3
+const KeplerGlContext = createContext({
+  selector: identity,
+  id: 'map'
+});
 
-export const CLOUD_PROVIDERS = {
-  [DropboxHandler.name]: DropboxHandler,
-  [CartoHandler.name]: CartoHandler
-};
+export default KeplerGlContext;
