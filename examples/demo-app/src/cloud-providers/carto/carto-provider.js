@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {OAuthApp} from '@carto/toolkit';
+import {App} from '@carto/toolkit';
 import Console from 'global/console';
 import CartoIcon from './carto-icon';
 import {formatCsv} from 'processors/data-processor';
@@ -38,16 +38,14 @@ export default class CartoProvider {
     this.currentMap = null;
 
     // Initialize CARTO API
-    this._carto = new OAuthApp(
+    this._carto = new App(
       {
-        scopes: 'schemas:c'
-      },
-      {
+        server: 'http://{user}.carto-staging.com/',
         namespace: NAMESPACE
       }
     );
 
-    this._carto.setClientID(clientId);
+    // this._carto.setClientID(clientId);
 
     if (this.getAccessToken()) {
       this.login();
@@ -58,13 +56,15 @@ export default class CartoProvider {
    * The CARTO toolkit library takes care of the login process.
    */
   login(onCloudLoginSuccess) {
-    try {
-      this._carto.login().then(() => {
-        onCloudLoginSuccess && onCloudLoginSuccess(this.name);
-      });
-    } catch (error) {
-      this._manageErrors(error);
-    }
+    // try {
+    //   this._carto.login().then(() => {
+    //     onCloudLoginSuccess && onCloudLoginSuccess(this.name);
+    //   });
+    // } catch (error) {
+    //   this._manageErrors(error);
+    // }
+
+    this._carto.setCredentials('bf17a9df69a0b4a0bc5dbdbb545c008db782781d', 'keplergl-raul6');
   }
 
   logout(onCloudLogoutSuccess) {
@@ -175,25 +175,27 @@ export default class CartoProvider {
    * from localStorage automatically
    */
   getAccessToken() {
-    let accessToken = null;
-    try {
-      accessToken = this._carto.oauth.expired ? null : this._carto.oauth.token;
-    } catch (error) {
-      this._manageErrors(error, false);
-    }
+    // let accessToken = null;
+    // try {
+    //   accessToken = this._carto.oauth.expired ? null : this._carto.oauth.token;
+    // } catch (error) {
+    //   this._manageErrors(error, false);
+    // }
 
-    return accessToken;
+    // return accessToken;
+    return true;
   }
 
   getUserName() {
-    let username = null;
-    try {
-      username = this._carto.oauth.expired ? null : this._carto.username;
-    } catch (error) {
-      this._manageErrors(error, false);
-    }
+    // let username = null;
+    // try {
+    //   username = this._carto.oauth.expired ? null : this._carto.username;
+    // } catch (error) {
+    //   this._manageErrors(error, false);
+    // }
 
-    return username;
+    // return username;
+    return this._carto.username;
   }
 
   /**
@@ -215,7 +217,7 @@ export default class CartoProvider {
       let visualization;
 
       if (privateMap.trim().toLowerCase() === 'true') {
-        await this._carto.login();
+        // await this._carto.login();
         const currentUsername = this.getUserName();
         if (currentUsername && currentUsername === username) {
           const cs = await this._carto.getCustomStorage();
@@ -269,7 +271,7 @@ export default class CartoProvider {
   async listMaps() {
     // TODO: Implement pagination using {type='all', pageOffset=0, pageSize=-1}
     try {
-      await this._carto.login();
+      // await this._carto.login();
       const username = this.getUserName();
       const cs = await this._carto.getCustomStorage();
 
