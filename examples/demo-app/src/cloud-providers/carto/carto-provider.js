@@ -40,7 +40,7 @@ export default class CartoProvider {
     // Initialize CARTO API
     this._carto = new App(
       {
-        server: 'http://{user}.carto-staging.com/',
+        serverUrlTemplate: 'http://{user}.localhost.lan:8080/',
         namespace: NAMESPACE
       }
     );
@@ -64,7 +64,7 @@ export default class CartoProvider {
     //   this._manageErrors(error);
     // }
 
-    this._carto.setCredentials('bf17a9df69a0b4a0bc5dbdbb545c008db782781d', 'keplergl-raul6');
+    this._carto.setCredentials('89ced43b8d169aa4d20dad9a0bb30319c2c6077b', 'cdb');
   }
 
   logout(onCloudLogoutSuccess) {
