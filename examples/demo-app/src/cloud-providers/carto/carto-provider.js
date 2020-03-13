@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import {OAuthApp} from '@carto/toolkit';
+import {App} from '@carto/toolkit';
 import Console from 'global/console';
 import CartoIcon from './carto-icon';
 import {formatCsv} from 'processors/data-processor';
@@ -27,7 +27,7 @@ import {Provider} from 'kepler.gl/cloud-providers';
 const NAME = 'carto';
 const DISPLAY_NAME = 'CARTO';
 const NAMESPACE = 'keplergl';
-const DOMAIN = 'carto.com';
+const DOMAIN = 'localhost.lan';
 const PRIVATE_STORAGE_ENABLED = true;
 const SHARING_ENABLED = true;
 
@@ -39,34 +39,22 @@ export default class CartoProvider extends Provider {
     this.thumbnail = {width: 300, height: 200};
     this.currentMap = null;
 
-    this._folderLink = `https://{user}.${DOMAIN}/dashboard/maps/external`;
+    this._folderLink = `http://{user}.${DOMAIN}:3000/dashboard/maps/external`;
 
     // Initialize CARTO API
-    this._carto = new OAuthApp(
-      {
-        authorization: `https://${DOMAIN}/oauth2`,
-        scopes: 'schemas:c'
-      },
-      {
-        serverUrlTemplate: `https://{user}.${DOMAIN}/`,
-        namespace: NAMESPACE
-      }
-    );
+    this._carto = new App({
+      serverUrlTemplate: `http://{user}.${DOMAIN}:8080/`,
+      namespace: NAMESPACE
+    });
 
-    this._carto.setClientID(clientId);
+    this._carto.setCredentials('89ced43b8d169aa4d20dad9a0bb30319c2c6077b', 'cdb');
   }
 
   /**
    * The CARTO toolkit library takes care of the login process.
    */
   login(onCloudLoginSuccess) {
-    try {
-      this._carto.login().then(() => {
-        onCloudLoginSuccess && onCloudLoginSuccess(this.name);
-      });
-    } catch (error) {
-      this._manageErrors(error);
-    }
+    return;
   }
 
   logout(onCloudLogoutSuccess) {
@@ -164,25 +152,11 @@ export default class CartoProvider extends Provider {
    * from localStorage automatically
    */
   getAccessToken() {
-    let accessToken = null;
-    try {
-      accessToken = this._carto.oauth.expired ? null : this._carto.oauth.token;
-    } catch (error) {
-      this._manageErrors(error, false);
-    }
-
-    return accessToken;
+    return true;
   }
 
   getUserName() {
-    let username = null;
-    try {
-      username = this._carto.oauth.expired ? null : this._carto.username;
-    } catch (error) {
-      this._manageErrors(error, false);
-    }
-
-    return username;
+    return this._carto.username;
   }
 
   /**
@@ -255,7 +229,6 @@ export default class CartoProvider extends Provider {
   async listMaps() {
     // TODO: Implement pagination using {type='all', pageOffset=0, pageSize=-1}
     try {
-      await this._carto.login();
       const username = this.getUserName();
       const cs = await this._carto.getCustomStorage();
 
