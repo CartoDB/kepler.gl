@@ -23,19 +23,21 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import styled, {ThemeProvider} from 'styled-components';
 import window from 'global/window';
 import {connect} from 'react-redux';
+
 import {theme} from 'kepler.gl/styles';
 import Banner from './components/banner';
-import Announcement from './components/announcement';
+import Announcement, {FormLink} from './components/announcement';
 import {replaceLoadDataModal} from './factories/load-data-modal';
 import {replaceMapControl} from './factories/map-control';
 import {replacePanelHeader} from './factories/panel-header';
 import {AUTH_TOKENS} from './constants/default-settings';
+import {messages} from './constants/localization';
+
 import {
   loadRemoteMap,
   loadSampleConfigurations,
   onExportFileSuccess,
-  onLoadCloudMapSuccess,
-  onLoadCloudMapError
+  onLoadCloudMapSuccess
 } from './actions';
 
 import {loadCloudMap} from 'kepler.gl/actions';
@@ -61,8 +63,8 @@ import {addDataToMap, addNotification} from 'kepler.gl/actions';
 import {processCsvData, processGeojson} from 'kepler.gl/processors';
 /* eslint-enable no-unused-vars */
 
-const BannerHeight = 30;
-const BannerKey = 'kgHideBanner-iiba';
+const BannerHeight = 48;
+const BannerKey = `banner-${FormLink}`;
 const keplerGlGetState = state => state.demo.keplerGl;
 
 const GlobalStyle = styled.div`
@@ -356,7 +358,6 @@ class App extends Component {
   };
 
   render() {
-    const {showBanner} = this.state;
     return (
       <ThemeProvider theme={theme}>
         <GlobalStyle
@@ -370,7 +371,7 @@ class App extends Component {
           <Banner
             show={this.state.showBanner}
             height={BannerHeight}
-            bgColor="#82368c"
+            bgColor="#2E7CF6"
             onClose={this._hideBanner}
           >
             <Announcement onDisable={this._disableBanner} />
@@ -380,9 +381,9 @@ class App extends Component {
               transition: 'margin 1s, height 1s',
               position: 'absolute',
               width: '100%',
-              height: showBanner ? `calc(100% - ${BannerHeight}px)` : '100%',
-              minHeight: `calc(100% - ${BannerHeight}px)`,
-              marginTop: showBanner ? `${BannerHeight}px` : 0
+              height: '100%',
+              left: 0,
+              top: 0
             }}
           >
             <AutoSizer>
@@ -395,11 +396,11 @@ class App extends Component {
                    */
                   getState={keplerGlGetState}
                   width={width}
-                  height={height - (showBanner ? BannerHeight : 0)}
+                  height={height}
                   cloudProviders={CLOUD_PROVIDERS}
+                  localeMessages={messages}
                   onExportToCloudSuccess={onExportFileSuccess}
                   onLoadCloudMapSuccess={onLoadCloudMapSuccess}
-                  onLoadCloudMapError={onLoadCloudMapError}
                 />
               )}
             </AutoSizer>

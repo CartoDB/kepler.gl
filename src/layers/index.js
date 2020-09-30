@@ -31,7 +31,7 @@ import {default as H3Layer} from './h3-hexagon-layer/h3-hexagon-layer';
 import {default as ScenegraphLayer} from './scenegraph-layer/scenegraph-layer';
 import {default as TripLayer} from './trip-layer/trip-layer';
 import {default as S2GeometryLayer} from './s2-geometry-layer/s2-geometry-layer';
-import {default as CartoLayer} from './carto-layer/carto-layer';
+import {default as CartoSQLLayer} from './carto-sql-layer/carto-sql-layer';
 
 // base layer
 export {default as Layer} from './base-layer';
@@ -51,7 +51,7 @@ export const KeplerGlLayers = {
   ScenegraphLayer,
   TripLayer,
   S2GeometryLayer,
-  CartoLayer
+  CartoSQLLayer
 };
 
 export const LayerClasses = {
@@ -68,5 +68,5 @@ export const LayerClasses = {
   '3D': ScenegraphLayer,
   trip: TripLayer,
   s2: S2GeometryLayer,
-  carto: CartoLayer
+  cartoSQL: CartoSQLLayer
 };
