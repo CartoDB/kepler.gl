@@ -118,8 +118,7 @@ export default {
       hexagonid: 'H3',
       trip: 'trip',
       s2: 'S2',
-      '3d': '3D',
-      carto: 'CARTO'
+      '3d': '3D'
     }
   },
   layerVisConfigs: {
