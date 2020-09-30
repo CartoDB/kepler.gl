@@ -120,7 +120,8 @@ export default {
       s2: 'S2',
       '3d': '3D',
       carto: 'CARTO',
-      'carto-sql': 'CARTO SQL'
+      'carto-sql': 'CARTO SQL',
+      'carto-bqtiler': 'CARTO BQTiler'
     }
   },
   layerVisConfigs: {
