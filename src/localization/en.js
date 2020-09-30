@@ -118,7 +118,10 @@ export default {
       hexagonid: 'H3',
       trip: 'trip',
       s2: 'S2',
-      '3d': '3D'
+      '3d': '3D',
+      carto: 'CARTO',
+      'carto-sql': 'CARTO SQL',
+      'carto-bqtiler': 'CARTO BQTiler'
     }
   },
   layerVisConfigs: {
