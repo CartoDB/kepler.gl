@@ -76,7 +76,7 @@ export default class CartoBQTilerLayer extends Layer {
   }
 
   get type() {
-    return 'carto-bqtiler';
+    return 'cartobqtiler';
   }
 
   get name() {
@@ -373,7 +373,7 @@ export default class CartoBQTilerLayer extends Layer {
         // ...defaultLayerProps,
         // ...layerProps,
         // ...data,
-        data: 'cartobq.maps.nyc_taxi_points_demo_id',
+        data: this.config.visConfig.tableName, //'cartobq.maps.nyc_taxi_points_demo_id',
         getLineColor: [255, 255, 255],
         getFillColor: [238, 77, 90],
         pointRadiusMinPixels: 2,

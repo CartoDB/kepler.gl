@@ -684,12 +684,11 @@ export default class Layer {
    * @returns {boolean} yes or no
    */
   hasLayerData(layerData) {
-    // if (!layerData) {
-    //   return false;
-    // }
+    if (!layerData) {
+      return false;
+    }
 
-    // return Boolean(layerData.data && layerData.data.length);
-    return true;
+    return Boolean(layerData.data && layerData.data.length);
   }
 
   isValidToSave() {
@@ -701,7 +700,7 @@ export default class Layer {
       this.type &&
       this.config.isVisible &&
       this.hasAllColumns() &&
-      this.hasLayerData(data) &&
+      // this.hasLayerData(data) &&
       typeof this.renderLayer === 'function'
     );
   }

@@ -76,7 +76,7 @@ export default class CartoSQLLayer extends Layer {
   }
 
   get type() {
-    return 'carto-sql';
+    return 'cartosql';
   }
 
   get name() {
@@ -373,7 +373,7 @@ export default class CartoSQLLayer extends Layer {
         // ...defaultLayerProps,
         // ...layerProps,
         // ...data,
-        data: 'SELECT * FROM world_population_2015',
+        data: this.config.visConfig.query, //'SELECT * FROM world_population_2015',
         credentials: {
           username: 'public',
           apiKey: 'default_public'
