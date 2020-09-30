@@ -119,7 +119,8 @@ export default {
       trip: 'trip',
       s2: 'S2',
       '3d': '3D',
-      carto: 'CARTO'
+      carto: 'CARTO',
+      'carto-sql': 'CARTO SQL'
     }
   },
   layerVisConfigs: {

@@ -68,5 +68,5 @@ export const LayerClasses = {
   '3D': ScenegraphLayer,
   trip: TripLayer,
   s2: S2GeometryLayer,
-  cartoSQL: CartoSQLLayer
+  cartosql: CartoSQLLayer
 };

@@ -893,7 +893,7 @@ export default function LayerConfiguratorFactory(
       );
     }
 
-    _renderCartoSQLLayerConfig({
+    _renderCartosqlLayerConfig({
       layer,
       visConfiguratorProps,
       layerConfiguratorProps,

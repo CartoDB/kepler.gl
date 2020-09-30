@@ -684,11 +684,12 @@ export default class Layer {
    * @returns {boolean} yes or no
    */
   hasLayerData(layerData) {
-    if (!layerData) {
-      return false;
-    }
+    // if (!layerData) {
+    //   return false;
+    // }
 
-    return Boolean(layerData.data && layerData.data.length);
+    // return Boolean(layerData.data && layerData.data.length);
+    return true;
   }
 
   isValidToSave() {
