@@ -370,56 +370,55 @@ export default class CartoSQLLayer extends Layer {
 
     return [
       new DeckGLCartoSQLLayer({
-        // ...defaultLayerProps,
-        // ...layerProps,
-        // ...data,
-        data: this.config.visConfig.query, //'SELECT * FROM world_population_2015',
+        ...defaultLayerProps,
+        ...layerProps,
+        ...data,
+        data: this.config.visConfig.query, //world_population_2015
         credentials: {
           username: 'public',
           apiKey: 'default_public'
         },
-        pointRadiusMinPixels: 2,
-        getFillColor: [255, 255, 255]
-        // highlightColor: HIGHLIGH_COLOR_3D,
-        // autoHighlight: visConfig.enable3d,
-        // stroked: visConfig.stroked,
-        // filled: visConfig.filled,
-        // extruded: visConfig.enable3d,
-        // wireframe: visConfig.wireframe,
-        // wrapLongitude: false,
-        // lineMiterLimit: 2,
-        // rounded: true,
-        // updateTriggers,
-        // _subLayerProps: {
-        //   ...(featureTypes.polygon ? {'polygons-stroke': opaOverwrite} : {}),
-        //   ...(featureTypes.line ? {'line-strings': opaOverwrite} : {}),
-        //   ...(featureTypes.point
-        //     ? {
-        //         points: {
-        //           lineOpacity: visConfig.strokeOpacity
-        //         }
-        //       }
-        //     : {})
-        // }
+        // pointRadiusMinPixels: 2,
+        highlightColor: HIGHLIGH_COLOR_3D,
+        autoHighlight: visConfig.enable3d,
+        stroked: visConfig.stroked,
+        filled: visConfig.filled,
+        extruded: visConfig.enable3d,
+        wireframe: visConfig.wireframe,
+        wrapLongitude: false,
+        lineMiterLimit: 2,
+        rounded: true,
+        updateTriggers,
+        _subLayerProps: {
+          ...(featureTypes.polygon ? {'polygons-stroke': opaOverwrite} : {}),
+          ...(featureTypes.line ? {'line-strings': opaOverwrite} : {}),
+          ...(featureTypes.point
+            ? {
+                points: {
+                  lineOpacity: visConfig.strokeOpacity
+                }
+              }
+            : {})
+        }
       }),
-      // ...(this.isLayerHovered(objectHovered) && !visConfig.enable3d
-      //   ? [
-      //       new DeckGLCartoSQLLayer({
-      //         ...this.getDefaultHoverLayerProps(),
-      //         ...layerProps,
-      //         wrapLongitude: false,
-      //         data: [objectHovered.object],
-      //         getLineWidth: data.getLineWidth,
-      //         getRadius: data.getRadius,
-      //         getElevation: data.getElevation,
-      //         getLineColor: this.config.highlightColor,
-      //         getFillColor: this.config.highlightColor,
-      //         // always draw outline
-      //         stroked: true,
-      //         filled: false
-      //       })
-      //     ]
-      //   : [])
+      ...(this.isLayerHovered(objectHovered) && !visConfig.enable3d
+        ? [
+            new DeckGLCartoSQLLayer({
+              ...this.getDefaultHoverLayerProps(),
+              ...layerProps,
+              wrapLongitude: false,
+              data: [objectHovered.object],
+              getLineWidth: data.getLineWidth,
+              getRadius: data.getRadius,
+              getElevation: data.getElevation,
+              getLineColor: this.config.highlightColor,
+              getFillColor: this.config.highlightColor,
+              // always draw outline
+              stroked: true,
+              filled: false
+            })
+          ]
+        : [])
     ];
   }
 }
