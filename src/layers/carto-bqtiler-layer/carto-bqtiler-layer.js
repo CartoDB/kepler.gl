@@ -45,7 +45,16 @@ export const cartoBQTilerVisConfigs = {
     ...LAYER_VIS_CONFIGS.thickness,
     defaultValue: 0.5
   },
-  strokeColor: 'strokeColor',
+  strokeColor: {
+    ...LAYER_VIS_CONFIGS.strokeColor,
+    defaultValue: [255, 255, 255]
+  },
+  color: {
+    type: 'color-select',
+    label: 'layerVisConfigs.fillColor',
+    property: 'color',
+    defaultValue: [238, 77, 90]
+  },
   colorRange: 'colorRange',
   strokeColorRange: 'strokeColorRange',
   radius: 'radius',
@@ -55,9 +64,25 @@ export const cartoBQTilerVisConfigs = {
   heightRange: 'elevationRange',
   elevationScale: 'elevationScale',
   stroked: 'stroked',
-  filled: 'filled',
+  filled: {
+    ...LAYER_VIS_CONFIGS.filled,
+    defaultValue: true
+  },
   enable3d: 'enable3d',
-  wireframe: 'wireframe'
+  wireframe: 'wireframe',
+
+  tableName: {
+    type: 'text',
+    defaultValue: 'cartobq.maps.nyc_taxi_points_demo_id',
+    label: 'layer.tableName',
+    property: 'tableName'
+  },
+  geomType: {
+    type: 'text',
+    defaultValue: 'point',
+    label: 'layer.geometryType',
+    property: 'geomType'
+  }
 };
 
 export const cartoBQTilerRequiredColumns = ['sql'];
@@ -370,54 +395,54 @@ export default class CartoBQTilerLayer extends Layer {
 
     return [
       new DeckGLCartoBQTilerLayer({
-        // ...defaultLayerProps,
-        // ...layerProps,
-        // ...data,
+        ...defaultLayerProps,
+        ...layerProps,
+        ...data,
         data: this.config.visConfig.tableName, //'cartobq.maps.nyc_taxi_points_demo_id',
-        getLineColor: [255, 255, 255],
-        getFillColor: [238, 77, 90],
-        pointRadiusMinPixels: 2,
-        lineWidthMinPixels: 1
-        // highlightColor: HIGHLIGH_COLOR_3D,
-        // autoHighlight: visConfig.enable3d,
-        // stroked: visConfig.stroked,
-        // filled: visConfig.filled,
-        // extruded: visConfig.enable3d,
-        // wireframe: visConfig.wireframe,
-        // wrapLongitude: false,
-        // lineMiterLimit: 2,
-        // rounded: true,
-        // updateTriggers,
-        // _subLayerProps: {
-        //   ...(featureTypes.polygon ? {'polygons-stroke': opaOverwrite} : {}),
-        //   ...(featureTypes.line ? {'line-strings': opaOverwrite} : {}),
-        //   ...(featureTypes.point
-        //     ? {
-        //         points: {
-        //           lineOpacity: visConfig.strokeOpacity
-        //         }
-        //       }
-        //     : {})
-        // }
+        // getLineColor: [255, 255, 255],
+        // getFillColor: [238, 77, 90],
+        // pointRadiusMinPixels: 2,
+        // lineWidthMinPixels: 1
+        highlightColor: HIGHLIGH_COLOR_3D,
+        autoHighlight: visConfig.enable3d,
+        stroked: visConfig.stroked,
+        filled: visConfig.filled,
+        extruded: visConfig.enable3d,
+        wireframe: visConfig.wireframe,
+        wrapLongitude: false,
+        lineMiterLimit: 2,
+        rounded: true,
+        updateTriggers,
+        _subLayerProps: {
+          ...(featureTypes.polygon ? {'polygons-stroke': opaOverwrite} : {}),
+          ...(featureTypes.line ? {'line-strings': opaOverwrite} : {}),
+          ...(featureTypes.point
+            ? {
+                points: {
+                  lineOpacity: visConfig.strokeOpacity
+                }
+              }
+            : {})
+        }
       }),
-      // ...(this.isLayerHovered(objectHovered) && !visConfig.enable3d
-      //   ? [
-      //       new DeckGLCartoBQTilerLayer({
-      //         ...this.getDefaultHoverLayerProps(),
-      //         ...layerProps,
-      //         wrapLongitude: false,
-      //         data: [objectHovered.object],
-      //         getLineWidth: data.getLineWidth,
-      //         getRadius: data.getRadius,
-      //         getElevation: data.getElevation,
-      //         getLineColor: this.config.highlightColor,
-      //         getFillColor: this.config.highlightColor,
-      //         // always draw outline
-      //         stroked: true,
-      //         filled: false
-      //       })
-      //     ]
-      //   : [])
+      ...(this.isLayerHovered(objectHovered) && !visConfig.enable3d
+        ? [
+            new DeckGLCartoBQTilerLayer({
+              ...this.getDefaultHoverLayerProps(),
+              ...layerProps,
+              wrapLongitude: false,
+              data: [objectHovered.object],
+              getLineWidth: data.getLineWidth,
+              getRadius: data.getRadius,
+              getElevation: data.getElevation,
+              getLineColor: this.config.highlightColor,
+              getFillColor: this.config.highlightColor,
+              // always draw outline
+              stroked: true,
+              filled: false
+            })
+          ]
+        : [])
     ];
   }
 }

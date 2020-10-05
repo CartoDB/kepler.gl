@@ -45,7 +45,16 @@ export const cartoSQLVisConfigs = {
     ...LAYER_VIS_CONFIGS.thickness,
     defaultValue: 0.5
   },
-  strokeColor: 'strokeColor',
+  strokeColor: {
+    ...LAYER_VIS_CONFIGS.strokeColor,
+    defaultValue: [255, 255, 255]
+  },
+  color: {
+    type: 'color-select',
+    label: 'layerVisConfigs.fillColor',
+    property: 'color',
+    defaultValue: [238, 77, 90]
+  },
   colorRange: 'colorRange',
   strokeColorRange: 'strokeColorRange',
   radius: 'radius',
@@ -55,9 +64,25 @@ export const cartoSQLVisConfigs = {
   heightRange: 'elevationRange',
   elevationScale: 'elevationScale',
   stroked: 'stroked',
-  filled: 'filled',
+  filled: {
+    ...LAYER_VIS_CONFIGS.filled,
+    defaultValue: true
+  },
   enable3d: 'enable3d',
-  wireframe: 'wireframe'
+  wireframe: 'wireframe',
+
+  query: {
+    type: 'text',
+    defaultValue: 'world_population_2015',
+    label: 'layer.sqlQuery',
+    property: 'query'
+  },
+  geomType: {
+    type: 'text',
+    defaultValue: 'point',
+    label: 'layer.geometryType',
+    property: 'geomType'
+  }
 };
 
 export const cartoSQLRequiredColumns = ['sql'];
