@@ -700,7 +700,7 @@ export default class Layer {
       this.type &&
       this.config.isVisible &&
       this.hasAllColumns() &&
-      this.hasLayerData(data) &&
+      // this.hasLayerData(data) &&
       typeof this.renderLayer === 'function'
     );
   }

@@ -103,6 +103,8 @@ export default {
     aggregateBy: 'Aggregate {field} by',
     '3DModel': '3D Model',
     '3DModelOptions': '3D Model Options',
+    sqlQuery: 'SQL query',
+    tableName: 'Table name',
     type: {
       point: 'point',
       arc: 'arc',
@@ -118,7 +120,10 @@ export default {
       hexagonid: 'H3',
       trip: 'trip',
       s2: 'S2',
-      '3d': '3D'
+      '3d': '3D',
+      carto: 'CARTO',
+      'cartosql': 'CARTO SQL',
+      'cartobqtiler': 'CARTO BQTiler'
     }
   },
   layerVisConfigs: {

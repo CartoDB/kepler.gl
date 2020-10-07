@@ -893,6 +893,344 @@ export default function LayerConfiguratorFactory(
       );
     }
 
+    _renderCartosqlLayerConfig({
+      layer,
+      visConfiguratorProps,
+      layerConfiguratorProps,
+      layerChannelConfigProps
+    }) {
+      const {
+        meta: {featureTypes = {}},
+        config: {visConfig}
+      } = layer;
+
+      return (
+        <StyledLayerVisualConfigurator>
+          <LayerConfigGroup label={'layer.sqlQuery'} collapsible>
+            <Input
+              type="text"
+              value={visConfig.query}
+              onChange={e => {
+                if (e.target.value && e.target.value.length) {
+                  visConfiguratorProps.onChange({query: e.target.value});
+                }
+              }}
+            />
+          </LayerConfigGroup>
+
+          <LayerConfigGroup label={'layer.geometryType'} collapsible>
+            <select
+              onChange={e => {
+                visConfiguratorProps.onChange({geomType: e.target.value});
+              }}
+            >
+              <option value="point">Point</option>
+              <option value="line">Line</option>
+              <option value="polygon">Polygon</option>
+            </select>
+          </LayerConfigGroup>
+
+          {/* Fill Color */}
+          {visConfig.geomType === 'polygon' || visConfig.geomType === 'point' ? (
+            <LayerConfigGroup
+              {...layer.visConfigSettings.filled}
+              {...visConfiguratorProps}
+              label="layer.fillColor"
+              collapsible
+            >
+              {layer.config.colorField ? (
+                <LayerColorRangeSelector {...visConfiguratorProps} />
+              ) : (
+                <LayerColorSelector {...layerConfiguratorProps} />
+              )}
+              <ConfigGroupCollapsibleContent>
+                <ChannelByValueSelector
+                  channel={layer.visualChannels.color}
+                  {...layerChannelConfigProps}
+                />
+                <VisConfigSlider {...layer.visConfigSettings.opacity} {...visConfiguratorProps} />
+              </ConfigGroupCollapsibleContent>
+            </LayerConfigGroup>
+          ) : null}
+
+          {/* stroke color */}
+          <LayerConfigGroup
+            {...layer.visConfigSettings.stroked}
+            {...visConfiguratorProps}
+            label="layer.strokeColor"
+            collapsible
+          >
+            {layer.config.strokeColorField ? (
+              <LayerColorRangeSelector {...visConfiguratorProps} property="strokeColorRange" />
+            ) : (
+              <LayerColorSelector
+                {...visConfiguratorProps}
+                selectedColor={layer.config.visConfig.strokeColor}
+                property="strokeColor"
+              />
+            )}
+            <ConfigGroupCollapsibleContent>
+              <ChannelByValueSelector
+                channel={layer.visualChannels.strokeColor}
+                {...layerChannelConfigProps}
+              />
+              <VisConfigSlider
+                {...layer.visConfigSettings.strokeOpacity}
+                {...visConfiguratorProps}
+              />
+            </ConfigGroupCollapsibleContent>
+          </LayerConfigGroup>
+
+          {/* Stroke Width */}
+          <LayerConfigGroup
+            {...visConfiguratorProps}
+            {...(featureTypes.polygon ? layer.visConfigSettings.stroked : {})}
+            label="layer.strokeWidth"
+            collapsible
+          >
+            {layer.config.sizeField ? (
+              <VisConfigSlider
+                {...layer.visConfigSettings.sizeRange}
+                {...visConfiguratorProps}
+                label={false}
+              />
+            ) : (
+              <VisConfigSlider
+                {...layer.visConfigSettings.thickness}
+                {...visConfiguratorProps}
+                label={false}
+              />
+            )}
+            <ConfigGroupCollapsibleContent>
+              <ChannelByValueSelector
+                channel={layer.visualChannels.size}
+                {...layerChannelConfigProps}
+              />
+            </ConfigGroupCollapsibleContent>
+          </LayerConfigGroup>
+
+          {/* Elevation */}
+          {visConfig.geomType === 'polygon' ? (
+            <LayerConfigGroup
+              {...visConfiguratorProps}
+              {...layer.visConfigSettings.enable3d}
+              disabled={!visConfig.filled}
+              collapsible
+            >
+              <VisConfigSlider
+                {...layer.visConfigSettings.elevationScale}
+                {...visConfiguratorProps}
+                label={false}
+              />
+              <ConfigGroupCollapsibleContent>
+                <ChannelByValueSelector
+                  channel={layer.visualChannels.height}
+                  {...layerChannelConfigProps}
+                />
+                <VisConfigSwitch {...visConfiguratorProps} {...layer.visConfigSettings.wireframe} />
+              </ConfigGroupCollapsibleContent>
+            </LayerConfigGroup>
+          ) : null}
+
+          {/* Radius */}
+          {visConfig.geomType === 'point' ? (
+            <LayerConfigGroup label={'layer.radius'} collapsible>
+              {!layer.config.radiusField ? (
+                <VisConfigSlider
+                  {...layer.visConfigSettings.radius}
+                  {...visConfiguratorProps}
+                  label={false}
+                  disabled={Boolean(layer.config.radiusField)}
+                />
+              ) : (
+                <VisConfigSlider
+                  {...layer.visConfigSettings.radiusRange}
+                  {...visConfiguratorProps}
+                  label={false}
+                  disabled={!layer.config.radiusField}
+                />
+              )}
+              <ConfigGroupCollapsibleContent>
+                <ChannelByValueSelector
+                  channel={layer.visualChannels.radius}
+                  {...layerChannelConfigProps}
+                />
+              </ConfigGroupCollapsibleContent>
+            </LayerConfigGroup>
+          ) : null}
+        </StyledLayerVisualConfigurator>
+      );
+    }
+
+    _renderCartobqtilerLayerConfig({
+      layer,
+      visConfiguratorProps,
+      layerConfiguratorProps,
+      layerChannelConfigProps
+    }) {
+      const {
+        meta: {featureTypes = {}},
+        config: {visConfig}
+      } = layer;
+
+      return (
+        <StyledLayerVisualConfigurator>
+          <LayerConfigGroup label={'layer.tableName'} collapsible>
+            <Input
+              type="text"
+              value={visConfig.tableName}
+              onChange={e => {
+                if (e.target.value && e.target.value.length) {
+                  visConfiguratorProps.onChange({tableName: e.target.value});
+                }
+              }}
+            />
+          </LayerConfigGroup>
+
+          <LayerConfigGroup label={'layer.geometryType'} collapsible>
+            <select
+              onChange={e => {
+                visConfiguratorProps.onChange({geomType: e.target.value});
+              }}
+            >
+              <option value="point">Point</option>
+              <option value="line">Line</option>
+              <option value="polygon">Polygon</option>
+            </select>
+          </LayerConfigGroup>
+
+          {/* Fill Color */}
+          {visConfig.geomType === 'polygon' || visConfig.geomType === 'point' ? (
+            <LayerConfigGroup
+              {...layer.visConfigSettings.filled}
+              {...visConfiguratorProps}
+              label="layer.fillColor"
+              collapsible
+            >
+              {layer.config.colorField ? (
+                <LayerColorRangeSelector {...visConfiguratorProps} />
+              ) : (
+                <LayerColorSelector {...layerConfiguratorProps} />
+              )}
+              <ConfigGroupCollapsibleContent>
+                <ChannelByValueSelector
+                  channel={layer.visualChannels.color}
+                  {...layerChannelConfigProps}
+                />
+                <VisConfigSlider {...layer.visConfigSettings.opacity} {...visConfiguratorProps} />
+              </ConfigGroupCollapsibleContent>
+            </LayerConfigGroup>
+          ) : null}
+
+          {/* stroke color */}
+          <LayerConfigGroup
+            {...layer.visConfigSettings.stroked}
+            {...visConfiguratorProps}
+            label="layer.strokeColor"
+            collapsible
+          >
+            {layer.config.strokeColorField ? (
+              <LayerColorRangeSelector {...visConfiguratorProps} property="strokeColorRange" />
+            ) : (
+              <LayerColorSelector
+                {...visConfiguratorProps}
+                selectedColor={layer.config.visConfig.strokeColor}
+                property="strokeColor"
+              />
+            )}
+            <ConfigGroupCollapsibleContent>
+              <ChannelByValueSelector
+                channel={layer.visualChannels.strokeColor}
+                {...layerChannelConfigProps}
+              />
+              <VisConfigSlider
+                {...layer.visConfigSettings.strokeOpacity}
+                {...visConfiguratorProps}
+              />
+            </ConfigGroupCollapsibleContent>
+          </LayerConfigGroup>
+
+          {/* Stroke Width */}
+          <LayerConfigGroup
+            {...visConfiguratorProps}
+            {...(featureTypes.polygon ? layer.visConfigSettings.stroked : {})}
+            label="layer.strokeWidth"
+            collapsible
+          >
+            {layer.config.sizeField ? (
+              <VisConfigSlider
+                {...layer.visConfigSettings.sizeRange}
+                {...visConfiguratorProps}
+                label={false}
+              />
+            ) : (
+              <VisConfigSlider
+                {...layer.visConfigSettings.thickness}
+                {...visConfiguratorProps}
+                label={false}
+              />
+            )}
+            <ConfigGroupCollapsibleContent>
+              <ChannelByValueSelector
+                channel={layer.visualChannels.size}
+                {...layerChannelConfigProps}
+              />
+            </ConfigGroupCollapsibleContent>
+          </LayerConfigGroup>
+
+          {/* Elevation */}
+          {visConfig.geomType === 'polygon' ? (
+            <LayerConfigGroup
+              {...visConfiguratorProps}
+              {...layer.visConfigSettings.enable3d}
+              disabled={!visConfig.filled}
+              collapsible
+            >
+              <VisConfigSlider
+                {...layer.visConfigSettings.elevationScale}
+                {...visConfiguratorProps}
+                label={false}
+              />
+              <ConfigGroupCollapsibleContent>
+                <ChannelByValueSelector
+                  channel={layer.visualChannels.height}
+                  {...layerChannelConfigProps}
+                />
+                <VisConfigSwitch {...visConfiguratorProps} {...layer.visConfigSettings.wireframe} />
+              </ConfigGroupCollapsibleContent>
+            </LayerConfigGroup>
+          ) : null}
+
+          {/* Radius */}
+          {visConfig.geomType === 'point' ? (
+            <LayerConfigGroup label={'layer.radius'} collapsible>
+              {!layer.config.radiusField ? (
+                <VisConfigSlider
+                  {...layer.visConfigSettings.radius}
+                  {...visConfiguratorProps}
+                  label={false}
+                  disabled={Boolean(layer.config.radiusField)}
+                />
+              ) : (
+                <VisConfigSlider
+                  {...layer.visConfigSettings.radiusRange}
+                  {...visConfiguratorProps}
+                  label={false}
+                  disabled={!layer.config.radiusField}
+                />
+              )}
+              <ConfigGroupCollapsibleContent>
+                <ChannelByValueSelector
+                  channel={layer.visualChannels.radius}
+                  {...layerChannelConfigProps}
+                />
+              </ConfigGroupCollapsibleContent>
+            </LayerConfigGroup>
+          ) : null}
+        </StyledLayerVisualConfigurator>
+      );
+    }
+
     render() {
       const {layer, datasets, updateLayerConfig, layerTypeOptions, updateLayerType} = this.props;
       const {fields = [], fieldPairs} = layer.config.dataId ? datasets[layer.config.dataId] : {};
