@@ -27,7 +27,7 @@ import {GeoJsonLayer as DeckGLGeoJsonLayer} from '@deck.gl/layers';
 import {hexToRgb} from 'utils/color-utils';
 import {getGeojsonDataMaps, getGeojsonBounds, getGeojsonFeatureTypes} from './carto-sql-utils';
 import CartoLayerIcon from './carto-sql-layer-icon';
-import {GEOJSON_FIELDS, HIGHLIGH_COLOR_3D, CHANNEL_SCALES} from 'constants/default-settings';
+import {GEOJSON_FIELDS, HIGHLIGH_COLOR_3D, CHANNEL_SCALES, NO_VALUE_COLOR} from 'constants/default-settings';
 import {LAYER_VIS_CONFIGS} from 'layers/layer-factory';
 
 const SUPPORTED_ANALYZER_TYPES = {
@@ -87,7 +87,7 @@ export const cartoSQLVisConfigs = {
   }
 };
 
-export const cartoSQLRequiredColumns = ['sql'];
+export const cartoSQLRequiredColumns = ['geojson'];
 export const featureAccessor = ({geojson}) => d => d[geojson];
 export const defaultElevation = 500;
 export const defaultLineWidth = 1;
@@ -211,7 +211,7 @@ export default class CartoSQLLayer extends Layer {
 
   getHoverData(object, allData) {
     // index of allData is saved to feature.properties
-    return allData[object.properties.index];
+    return [object.properties.cartodb_id, ...Object.values(object.properties)];
   }
 
   calculateDataAttribute({allData, filteredIndex}, getPosition) {
@@ -280,29 +280,45 @@ export default class CartoSQLLayer extends Layer {
     const rScale = radiusField && this.getVisChannelScale(radiusScale, radiusDomain, radiusRange);
 
     // access feature properties from geojson sub layer
-    const getDataForGpuFilter = f => allData[f.properties.index];
-    const getIndexForGpuFilter = f => f.properties.index;
+    const getDataForGpuFilter = f => [f.properties.cartodb_id, ...Object.values(f.properties)];
+    const getIndexForGpuFilter = f => f.properties.cartodb_id;
+
+    const propertyAccesor = (f, d) => d[f.id];
 
     return {
       data,
       getFilterValue: gpuFilter.filterValueAccessor(getIndexForGpuFilter, getDataForGpuFilter),
       getFillColor: cScale
-        ? d => this.getEncodedChannelValue(cScale, allData[d.properties.index], colorField)
+        ? d =>
+            this.getEncodedChannelValue(
+              cScale,
+              d.properties,
+              colorField,
+              NO_VALUE_COLOR,
+              propertyAccesor
+            )
         : color,
       getLineColor: scScale
-        ? d => this.getEncodedChannelValue(scScale, allData[d.properties.index], strokeColorField)
+        ? d =>
+            this.getEncodedChannelValue(
+              scScale,
+              d.properties,
+              strokeColorField,
+              NO_VALUE_COLOR,
+              propertyAccesor
+            )
         : strokeColor || color,
       getLineWidth: d =>
         sScale
-          ? this.getEncodedChannelValue(sScale, allData[d.properties.index], sizeField, 0)
+          ? this.getEncodedChannelValue(sScale, allData[d.properties.cartodb_id], sizeField, 0)
           : d.properties.lineWidth || defaultLineWidth,
       getElevation: d =>
         eScale
-          ? this.getEncodedChannelValue(eScale, allData[d.properties.index], heightField, 0)
+          ? this.getEncodedChannelValue(eScale, allData[d.properties.cartodb_id], heightField, 0)
           : d.properties.elevation || defaultElevation,
       getRadius: d =>
         rScale
-          ? this.getEncodedChannelValue(rScale, allData[d.properties.index], radiusField, 0)
+          ? this.getEncodedChannelValue(rScale, allData[d.properties.cartodb_id], radiusField, 0)
           : d.properties.radius || defaultRadius
     };
   }
