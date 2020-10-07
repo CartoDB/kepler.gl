@@ -401,6 +401,7 @@ class App extends Component {
                   localeMessages={messages}
                   onExportToCloudSuccess={onExportFileSuccess}
                   onLoadCloudMapSuccess={onLoadCloudMapSuccess}
+                  theme="light"
                 />
               )}
             </AutoSizer>

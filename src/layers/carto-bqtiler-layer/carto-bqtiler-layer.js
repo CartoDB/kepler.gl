@@ -23,6 +23,7 @@ import {DATA_TYPES} from 'type-analyzer';
 
 import Layer, {colorMaker} from '../base-layer';
 import {CartoBQTilerLayer as DeckGLCartoBQTilerLayer} from '@deck.gl/carto';
+import {GeoJsonLayer as DeckGLGeoJsonLayer} from '@deck.gl/layers';
 import {hexToRgb} from 'utils/color-utils';
 import {getGeojsonDataMaps, getGeojsonBounds, getGeojsonFeatureTypes} from './carto-bqtiler-utils';
 import CartoLayerIcon from './carto-bqtiler-layer-icon';
@@ -281,14 +282,12 @@ export default class CartoBQTilerLayer extends Layer {
     return {
       data,
       getFilterValue: gpuFilter.filterValueAccessor(getIndexForGpuFilter, getDataForGpuFilter),
-      getFillColor: d =>
-        cScale
-          ? this.getEncodedChannelValue(cScale, allData[d.properties.index], colorField)
-          : d.properties.fillColor || color,
-      getLineColor: d =>
-        scScale
-          ? this.getEncodedChannelValue(scScale, allData[d.properties.index], strokeColorField)
-          : d.properties.lineColor || strokeColor || color,
+      getFillColor: cScale
+        ? d => this.getEncodedChannelValue(cScale, allData[d.properties.index], colorField)
+        : color,
+      getLineColor: scScale
+        ? d => this.getEncodedChannelValue(scScale, allData[d.properties.index], strokeColorField)
+        : strokeColor || color,
       getLineWidth: d =>
         sScale
           ? this.getEncodedChannelValue(sScale, allData[d.properties.index], sizeField, 0)
@@ -427,7 +426,7 @@ export default class CartoBQTilerLayer extends Layer {
       }),
       ...(this.isLayerHovered(objectHovered) && !visConfig.enable3d
         ? [
-            new DeckGLCartoBQTilerLayer({
+            new DeckGLGeoJsonLayer({
               ...this.getDefaultHoverLayerProps(),
               ...layerProps,
               wrapLongitude: false,

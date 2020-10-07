@@ -23,6 +23,7 @@ import {DATA_TYPES} from 'type-analyzer';
 
 import Layer, {colorMaker} from '../base-layer';
 import {CartoSQLLayer as DeckGLCartoSQLLayer} from '@deck.gl/carto';
+import {GeoJsonLayer as DeckGLGeoJsonLayer} from '@deck.gl/layers';
 import {hexToRgb} from 'utils/color-utils';
 import {getGeojsonDataMaps, getGeojsonBounds, getGeojsonFeatureTypes} from './carto-sql-utils';
 import CartoLayerIcon from './carto-sql-layer-icon';
@@ -51,6 +52,7 @@ export const cartoSQLVisConfigs = {
   },
   color: {
     type: 'color-select',
+    group: 'color',
     label: 'layerVisConfigs.fillColor',
     property: 'color',
     defaultValue: [238, 77, 90]
@@ -187,6 +189,9 @@ export default class CartoSQLLayer extends Layer {
     return {
       ...super.getDefaultLayerConfig(props),
 
+      // overwrite default color
+      color: cartoSQLVisConfigs.color.defaultValue,
+
       // add height visual channel
       heightField: null,
       heightDomain: [0, 1],
@@ -281,14 +286,12 @@ export default class CartoSQLLayer extends Layer {
     return {
       data,
       getFilterValue: gpuFilter.filterValueAccessor(getIndexForGpuFilter, getDataForGpuFilter),
-      getFillColor: d =>
-        cScale
-          ? this.getEncodedChannelValue(cScale, allData[d.properties.index], colorField)
-          : d.properties.fillColor || color,
-      getLineColor: d =>
-        scScale
-          ? this.getEncodedChannelValue(scScale, allData[d.properties.index], strokeColorField)
-          : d.properties.lineColor || strokeColor || color,
+      getFillColor: cScale
+        ? d => this.getEncodedChannelValue(cScale, allData[d.properties.index], colorField)
+        : color,
+      getLineColor: scScale
+        ? d => this.getEncodedChannelValue(scScale, allData[d.properties.index], strokeColorField)
+        : strokeColor || color,
       getLineWidth: d =>
         sScale
           ? this.getEncodedChannelValue(sScale, allData[d.properties.index], sizeField, 0)
@@ -331,8 +334,7 @@ export default class CartoSQLLayer extends Layer {
       // set both fill and stroke to true
       return this.updateLayerVisConfig({
         filled: true,
-        stroked: true,
-        strokeColor: colorMaker.next().value
+        stroked: true
       });
     } else if (featureTypes && featureTypes.point) {
       // set fill to true if detect point
@@ -428,7 +430,7 @@ export default class CartoSQLLayer extends Layer {
       }),
       ...(this.isLayerHovered(objectHovered) && !visConfig.enable3d
         ? [
-            new DeckGLCartoSQLLayer({
+            new DeckGLGeoJsonLayer({
               ...this.getDefaultHoverLayerProps(),
               ...layerProps,
               wrapLongitude: false,
